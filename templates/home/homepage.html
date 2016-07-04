@@ -12,15 +12,14 @@
                     <div class="intro-message">
                         <h1>Science Alliance Network</h1>
                         <hr class="intro-divider">
-                        <ul class="list-inline intro-social-buttons">
-                            <li>
-                                <a href="http://sciencealliancenetwork.com" class="btn btn-default btn-lg"><i class="fa fa-sign-in fa-fw"></i> <span class="network-name">Network Sign In</span></a>
-                            </li>
-                            <li>
-                                <a href="contact.html" class="btn btn-default btn-lg"><i class="fa fa-envelope-o fa-fw"></i> <span class="network-name">Contact Us</span></a>
-                            </li>
-                        </ul>
+                        <form method="post" action={{ url_for('home.login') }}>
+                        <input class="form-control home-form" type="text" name="username" placeholder="Username">
+                        <input class="form-control home-form" type="password" name="password" placeholder="Password">
+                        <br />
+                        <button type="submit" class="btn btn-default btn-lg"><span class="network-name">Log In</span></button>
+                        </form>
                         <hr class="intro-divider">
+                        <a class="register-link" href={{ url_for('home.register') }}>Need an account? Register here.</a>
                     </div>
                 </div>
             </div>

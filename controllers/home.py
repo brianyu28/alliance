@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 home = Blueprint('home', __name__,
                         template_folder='../templates/home')
@@ -7,9 +7,12 @@ home = Blueprint('home', __name__,
 def homepage():
    return render_template('homepage.html')
 
-@home.route('/login/')
+@home.route('/login/', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        return render_template('login.html')
 
 @home.route('/register/')
 def register():

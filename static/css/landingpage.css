@@ -194,3 +194,28 @@ footer {
 p.copyright {
     margin: 15px 0 0;
 }
+
+/* Brian added the following */
+
+.home-form {
+    width:250px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:10px;
+}
+
+.register-link {
+    color:white;
+}
+
+.register-link:visited {
+    color:white;
+}
+
+.register-link:hover {
+    color:white;
+}
+
+.register-link:active {
+    color:white;
+}
