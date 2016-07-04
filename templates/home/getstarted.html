@@ -1,0 +1,39 @@
+{% extends "home/homebase.html" %}
+
+
+{% block content %}
+
+<div class="banner-center">
+
+        <div class="container">
+
+            <div class="row">
+                    <h1>Getting Started</h1>
+                    <h3>Science Alliance Network</h3>
+                    <hr class="intro-divider">                
+            </div>
+
+        </div>
+    </div>
+
+<div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">For Students:</h2>
+                    <p class="lead">
+                        If you have yet to sign up for Science Alliance Network, start by <a href={{ url_for('home.register') }}>registering for an account</a>.
+                    </p>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+{% endblock %}
