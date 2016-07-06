@@ -219,3 +219,8 @@ p.copyright {
 .register-link:active {
     color:white;
 }
+
+.form-control {
+    margin-bottom:10px;
+}
+

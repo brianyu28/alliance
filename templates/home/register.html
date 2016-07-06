@@ -15,20 +15,47 @@
 
         </div>
     </div>
+    
 
 <div class="content-section-a">
 
         <div class="container">
+           
+{% if error is defined %}
+<div class="alert alert-danger">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Error:</strong> {{ error }}
+</div>
+{% endif %}
+           
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-7">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">Register is not yet available.</h2>
+                    <h2 class="section-heading">Join Science Alliance Network</h2>
                     <p class="lead">
-                        This feature is currently under construction.
+                        <form method="post" action={{ url_for('home.register') }}>
+                            <h4>Basic Information</h4>
+                            <input type="text" class="form-control" name="first" placeholder="First Name" autofocus>
+                            <input type="text" class="form-control" name="last" placeholder="Last Name">
+                            <input type="email" class="form-control" name="email" placeholder="Email Address">
+                            <br />
+                            <h4>Account Information</h4>
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                            <input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password">
+                            <select class="form-control" name="acct_type">
+                               <option value="None">Select Account Type</option>
+                                <option value="Student">Student</option>
+                                <option value="Mentor">Mentor</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
+                            <input type="text" class="form-control" name="school" placeholder="School">
+                            <button type="submit" class="btn btn-default">Register</button>
+                        </form>
                     </p>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-7"></div>
             </div>
 
         </div>
