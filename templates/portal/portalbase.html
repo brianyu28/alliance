@@ -28,7 +28,13 @@
 
     <ul class="nav">
        {% block sidebar %}
-        {% endblock %}
+       <li id="sidebar-login">
+        <a href="{{ url_for('portal.logout') }}">
+        <i class="pe-7s-power"></i>
+        <p>Log Out</p>
+        </a>
+        </li>
+       {% endblock %}
     </ul>
     </div>
 </div>

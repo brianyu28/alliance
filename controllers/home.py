@@ -8,11 +8,8 @@ home = Blueprint('home', __name__,
 def homepage():
     if 'id' in session:
         # user is logged in, go to the portal
-        print "Here"
-        print session['id']
         return redirect(url_for('portal.portal_page'))
     else:
-        print "There"
         return render_template('homepage.html')
 
 @home.route('/login/', methods=['GET', 'POST'])
@@ -20,6 +17,10 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
+        # check username and password
+        
+        # if accurate, log in
+        # if not accurate, redirect to login with error
         return render_template('login.html')
 
 @home.route('/register/', methods=['GET', 'POST'])
@@ -36,6 +37,9 @@ def register():
             return render_template('register.html', error='Your passwords did not match.')
         if (request.form['acct_type'] == "None"):
             return render_template('register.html', error='You must select an account type.')
+        # need to add username checking to see if username already exists
+        if (not dbmain.usernameAvailable(request.form['username'])):
+            return render_template('register.html', error='Your requested username is already taken.')
         user_id = dbmain.addUser(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'])
         session['id'] = str(user_id)
         return redirect(url_for('home.homepage'))

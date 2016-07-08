@@ -6,4 +6,11 @@ portal = Blueprint('portal', __name__,
 
 @portal.route('/portal/')
 def portal_page():
-    return render_template('portal.html')
+    if 'id' not in session:
+        return redirect(url_for('home.homepage')) #possibly change to a must be logged in page
+    return render_template('portal.html', user = currentUser())
+
+@portal.route('/logout/')
+def logout():
+    session.clear()
+    return redirect(url_for('home.homepage'))
