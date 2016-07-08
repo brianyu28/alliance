@@ -8,7 +8,7 @@ portal = Blueprint('portal', __name__,
 def portal_page():
     if 'id' not in session:
         return redirect(url_for('home.homepage')) #possibly change to a must be logged in page
-    return render_template('portal.html', user = currentUser())
+    return render_template('portal.html', user = dbmain.currentUser())
 
 @portal.route('/logout/')
 def logout():

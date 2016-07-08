@@ -10,7 +10,7 @@
             <div class="row">
                     <h1>Log In</h1>
                     <h3>Science Alliance Network</h3>
-                    <hr class="intro-divider">                
+                    <hr class="intro-divider">
             </div>
 
         </div>
@@ -19,6 +19,14 @@
 <div class="content-section-a">
 
         <div class="container">
+
+          {% if error is defined %}
+          <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error:</strong> {{ error }}
+          </div>
+          {% endif %}
+          
             <div class="row">
                 <div class="col-md-7">
                     <hr class="section-heading-spacer">

@@ -17,11 +17,13 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        # check username and password
-        
-        # if accurate, log in
-        # if not accurate, redirect to login with error
-        return render_template('login.html')
+        authenticated = dbmain.authenticate(request.form['username'], request.form['password'])
+        if authenticated:
+            user_id = str(dbmain.userByUsername(request.form['username'])['_id'])
+            session['id'] = user_id
+            return redirect(url_for('home.homepage'))
+        else:
+            return render_template('login.html', error='Your login credentials were incorrect.')
 
 @home.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -55,4 +57,3 @@ def contact():
 @home.route('/getstarted/')
 def getstarted():
     return render_template('getstarted.html')
-

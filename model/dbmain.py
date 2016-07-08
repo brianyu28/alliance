@@ -1,5 +1,6 @@
 import pymongo
 from pymongo import MongoClient
+from bson import ObjectId
 from flask import session
 from helpers import *
 client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
@@ -31,7 +32,7 @@ def currentUser():
     return db.users.find_one({"_id" : ObjectId(session["id"])})
 
 def authenticate(username, password):
-    user = userByUsername(user)
+    user = userByUsername(username)
     hashed_pass = user["password"]
     return check_password(password, hashed_pass)
 
