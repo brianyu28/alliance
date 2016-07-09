@@ -4,3 +4,12 @@
 {% block content %}
 This is the portal.
 {% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-portal').addClass('active');   
+});
+</script>
+{% endblock %}
