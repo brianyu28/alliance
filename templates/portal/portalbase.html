@@ -6,6 +6,19 @@
         <p><i class="fa fa-home fa-fw"></i>&nbsp;&nbsp;Home</p>
     </a>
 </li>
+<li id="sidebar-fair">
+   <a href="#">
+        <p><i class="fa fa-trophy fa-fw"></i>&nbsp;&nbsp;Fair</p>
+    </a>
+</li>
+
+{% if user.acct_type == "Administrator" %}
+<li id="sidebar-participants">
+   <a href="#">
+        <p><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Participants</p>
+    </a>
+</li>
+{% endif %}
 
 {% if user.acct_type == "Mentor" or user.acct_type == "Student" %}
 <li id="sidebar-project">
@@ -16,16 +29,16 @@
 {% endif %}
 
 {% if user.acct_type == "Mentor" %}
-<li id="sidebar-settings">
+<li id="sidebar-progress">
     <a href="#">
         <p><i class="fa fa-th-list fa-fw"></i>&nbsp;&nbsp;Progress Report</p>
     </a>
 </li>
 {% endif %}
 
-<li id="sidebar-settings">
+<li id="sidebar-messenger">
     <a href="#">
-        <p><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;&nbsp;Messenger</p>
+        <p><i class="fa fa-comments-o fa-fw"></i>&nbsp;&nbsp;Messenger</p>
     </a>
 </li>
 <li id="sidebar-settings">
