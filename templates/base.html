@@ -34,6 +34,12 @@
                     <b>Science Alliance</b> Network
                 </a>
             </div>
+            
+            {% if user is defined %}
+            <div style="text-align:center;">
+                {{ user.first }} {{ user.last }}
+            </div>
+            {% endif %}
 
             <ul class="nav">
                {% block sidebar %}
