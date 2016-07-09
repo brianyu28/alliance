@@ -3,14 +3,14 @@
 {% block sidebar %}
 <li id="sidebar-portal">
    <a href="{{ url_for('portal.portal_page') }}">
-        <p><i class="fa fa-home fa-fw"></i>Home</p>
+        <p><i class="fa fa-home fa-fw"></i>&nbsp;&nbsp;Home</p>
     </a>
 </li>
 
 {% if user.acct_type == "Mentor" or user.acct_type == "Student" %}
 <li id="sidebar-project">
     <a href="#">
-        <p><i class="pe-7s-science"></i>Project</p>
+        <p><i class="fa fa-flask fa-fw"></i>&nbsp;&nbsp;Project</p>
     </a>
 </li>
 {% endif %}
@@ -18,30 +18,30 @@
 {% if user.acct_type == "Mentor" %}
 <li id="sidebar-settings">
     <a href="#">
-        <p><i class="pe-7s-graph2"></i>Progress Report</p>
+        <p><i class="fa fa-th-list fa-fw"></i>&nbsp;&nbsp;Progress Report</p>
     </a>
 </li>
 {% endif %}
 
 <li id="sidebar-settings">
     <a href="#">
-        <p><i class="pe-7s-chat"></i>Messenger</p>
+        <p><i class="fa fa-paper-plane-o fa-fw"></i>&nbsp;&nbsp;Messenger</p>
     </a>
 </li>
 <li id="sidebar-settings">
     <a href="#">
-        <p><i class="fa fa-gears fa-fw"></i>Settings</p>
+        <p><i class="fa fa-gears fa-fw"></i>&nbsp;&nbsp;Settings</p>
     </a>
 </li>
 <li id="sidebar-resources">
     <a href="#">
-        <p><i class="pe-7s-copy-file"></i>Resources</p>
+        <p><i class="fa fa-copy fa-fw"></i>&nbsp;&nbsp;Resources</p>
     </a>
 </li>
 
 <li id="sidebar-logout">
     <a href="{{ url_for('portal.logout') }}">
-        <p><i class="pe-7s-power"></i>Log Out</p>
+        <p><i class="fa fa-sign-out fa-fw"></i>&nbsp;&nbsp;Log Out</p>
     </a>
 </li>
 {% endblock %}
