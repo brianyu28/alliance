@@ -1,21 +1,17 @@
 {% extends "portal/portalbase.html" %}
 
-
 {% block content %}
-<h2>Portal</h2>
+<h2>Fair</h2>
 <hr>
-<div class="row">
-   <div class="col">
-       Welcome to Science Alliance Network.
-   </div>
-</div>
+{% block contents %}{% endblock %}
+
 {% endblock %}
 
 
 {% block script %}
 <script>
 $(document).ready(function() {
-    $('#sidebar-portal').addClass('active');   
+    $('#sidebar-fair').addClass('active');   
 });
 </script>
 {% endblock %}
