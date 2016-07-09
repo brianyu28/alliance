@@ -2,38 +2,25 @@
 
 
 {% block content %}
-
-<div class="banner-center">
-
-        <div class="container">
-
-            <div class="row">
-                    <h1>Getting Started</h1>
-                    <h3>Science Alliance Network</h3>
-                    <hr class="intro-divider">                
-            </div>
-
-        </div>
+<h1>Getting Started</h1>
+<hr>
+<div class="row">
+    <div class="col-md-10">
+        <h2>For Students:</h2>
+        <p>
+            If you have yet to sign up for Science Alliance Network, start by <a href={{ url_for('home.register') }}>registering for an account</a>.
+        </p>
     </div>
+    <div class="col-md-2"></div>
+</div>
 
-<div class="content-section-a">
+{% endblock %}
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">For Students:</h2>
-                    <p class="lead">
-                        If you have yet to sign up for Science Alliance Network, start by <a href={{ url_for('home.register') }}>registering for an account</a>.
-                    </p>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
 
-        </div>
-        <!-- /.container -->
-
-    </div>
-
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-getstarted').addClass('active');   
+});
+</script>
 {% endblock %}

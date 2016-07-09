@@ -2,24 +2,8 @@
 
 
 {% block content %}
-
-<div class="banner-center">
-
-        <div class="container">
-
-            <div class="row">
-                    <h1>Register</h1>
-                    <h3>Science Alliance Network</h3>
-                    <hr class="intro-divider">                
-            </div>
-
-        </div>
-    </div>
-    
-
-<div class="content-section-a">
-
-        <div class="container">
+<h1>Register</h1>
+<hr>
            
 {% if error is defined %}
 <div class="alert alert-danger">
@@ -27,40 +11,43 @@
   <strong>Error:</strong> {{ error }}
 </div>
 {% endif %}
-           
-            <div class="row">
-                <div class="col-md-7">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">Join Science Alliance Network</h2>
-                    <p class="lead">
-                        <form method="post" action={{ url_for('home.register') }}>
-                            <h4>Basic Information</h4>
-                            <input type="text" class="form-control" name="first" placeholder="First Name" autofocus>
-                            <input type="text" class="form-control" name="last" placeholder="Last Name">
-                            <input type="email" class="form-control" name="email" placeholder="Email Address">
-                            <br />
-                            <h4>Account Information</h4>
-                            <input type="text" class="form-control" name="username" placeholder="Desired Username">
-                            <input type="password" class="form-control" name="password" placeholder="Password">
-                            <input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password">
-                            <select class="form-control" name="acct_type">
-                               <option value="None">Select Account Type</option>
-                                <option value="Student">Student</option>
-                                <option value="Mentor">Mentor</option>
-                                <option value="Administrator">Administrator</option>
-                            </select>
-                            <input type="text" class="form-control" name="school" placeholder="School">
-                            <button type="submit" class="btn btn-default">Register</button>
-                        </form>
-                    </p>
-                </div>
-                <div class="col-md-5"></div>
-            </div>
 
-        </div>
-
+<div class="row" style="text-align:center;">
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+    <div class="col-lg-4 col-md-6 col-sm-8">
+        <h2>Join Science Alliance Network</h2>
+        <hr>
+            <form method="post" action={{ url_for('home.register') }}>
+                <h5>Basic Information</h5>
+                <input style="margin-bottom:10px;" type="text" class="form-control" name="first" placeholder="First Name" autofocus>
+                <input style="margin-bottom:10px;" type="text" class="form-control" name="last" placeholder="Last Name">
+                <input type="email" class="form-control" name="email" placeholder="Email Address">
+                <br />
+                <h5>Account Information</h5>
+                <input style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Desired Username">
+                <input style="margin-bottom:10px;" type="password" class="form-control" name="password" placeholder="Password">
+                <input style="margin-bottom:10px;" type="password" class="form-control" name="password_confirm" placeholder="Confirm Password">
+                <select style="margin-bottom:10px;" class="form-control" name="acct_type">
+                   <option value="None">Select Account Type</option>
+                    <option value="Student">Student</option>
+                    <option value="Mentor">Mentor</option>
+                    <option value="Administrator">Administrator</option>
+                </select>
+                <input style="margin-bottom:10px;" type="text" class="form-control" name="school" placeholder="School">
+                <button type="submit" class="btn btn-default">Register</button>
+            </form>
 
     </div>
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+</div>
 
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-register').addClass('active');   
+});
+</script>
 {% endblock %}

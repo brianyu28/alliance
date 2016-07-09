@@ -1,0 +1,12 @@
+@media (max-width: 991px) {
+    .navbar {
+        visibility: visible !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar {
+        visibility: hidden !important;
+        margin-bottom: -61px !important;
+    }
+}

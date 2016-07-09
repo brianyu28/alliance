@@ -1,109 +1,55 @@
 {% extends "home/homebase.html" %}
 
 {% block content %}
-
-
-    <!-- Header -->
-    <div class="intro-header">
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="intro-message">
-                        <h1>Science Alliance Network</h1>
-                        <hr class="intro-divider">
-                        <form method="post" action={{ url_for('home.login') }}>
-                        <input class="form-control home-form" type="text" name="username" placeholder="Username" autofocus>
-                        <input class="form-control home-form" type="password" name="password" placeholder="Password">
-                        <br />
-                        <button type="submit" class="btn btn-default btn-lg"><span class="network-name">Log In</span></button>
-                        </form>
-                        <hr class="intro-divider">
-                        <a class="register-link" href={{ url_for('home.register') }}>Need an account? Register here.</a>
-                    </div>
-                </div>
+<h1>Science Alliance Network</h1>
+<hr>
+<div class="row">
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+    <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="card" style="text-align:center;">
+            <div class="header">
+                <h4 class="title">Log In</h4></div>
+            <div class="content">
+                <form method="post" action={{ url_for( 'home.login') }}>
+                    <input style="margin-bottom:10px;" class="form-control home-form" type="text" name="username" placeholder="Username" autofocus>
+                    <input class="form-control home-form" type="password" name="password" placeholder="Password">
+                    <br />
+                    <button type="submit" class="btn btn-default"><span class="network-name">Log In</span></button>
+                </form>
+                <hr>
+                <a class="register-link" href={{ url_for( 'home.register') }}>Need an account? Register here.</a>
             </div>
-
         </div>
-        <!-- /.container -->
-
     </div>
-    <!-- /.intro-header -->
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+</div>
 
-    <!-- Page Content -->
-    <div class="content-section-a">
-
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-5 col-sm-6">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">Welcome to Science Alliance.</h2>
-                    <p class="lead">
-                        <b>Science Alliance</b> is a program designed to provide mentorship to young students interested in science research.
-                        <br /><br />
-                        The Science Alliance Network website provides a variety of online resources that make it easy for school districts to organize their own science fairs, and facilitate the process of mentoring young students in their pursuit of scientific research. Science Alliance Network aims to give high schools the resources they need to start their own Science Alliance programs, and provide easy-to-access web services that enhance the science fair process.
-                    </p>
-                </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src={{ url_for('static', filename='img/mainpage_1.jpg') }} alt="">
-                    <br /><br />
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
+<div class="row">
+    <hr>
+    <div class="col-md-7 col-sm-6">
+        <h2>Welcome to Science Alliance.</h2>
+        <p><b>Science Alliance</b> is a program designed to provide mentorship to young students interested in science research.
+            <br />
+            <br /> The Science Alliance Network website provides a variety of online resources that make it easy for school districts to organize their own science fairs, and facilitate the process of mentoring young students in their pursuit of scientific research. Science Alliance Network aims to give high schools the resources they need to start their own Science Alliance programs, and provide easy-to-access web services that enhance the science fair process. </p>
     </div>
-    <!-- /.content-section-a -->
+    <div class="col-md-5 col-sm-6"> <img class="img-responsive" src={{ url_for( 'static', filename='img/mainpage_1.jpg' ) }} alt=""></div>
+</div>
 
-    <div class="content-section-b">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">Our Mission</h2>
-                    <p class="lead">
-                    The mission of Science Alliance Network is to develop innovative programs to help young students get involved in first-hand scientific research, exploration and investigation. We believe these programs inspire a passion for science and nurture inquisitive habits and reasoning skills. To achieve this goal, Science Alliance Network is focused on fostering Science Alliance branches nationwide. SAN offers many resources to make it easy for high school students and teachers to jump-start their own Science Alliance programs in their local area.
-                    </p>
-                </div>
-                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src={{ url_for('static', filename='img/mainpage_2.jpg') }} alt="">
-                    <br /><br />
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
+<div class="row">
+   <hr>
+    <div class="col-md-5 col-sm-6"> <img class="img-responsive" src={{ url_for( 'static', filename='img/mainpage_2.jpg' ) }} alt=""></div>
+    <div class="col-md-7 col-sm-6">
+        <h2>Our Mission</h2>
+        <p> The mission of Science Alliance Network is to develop innovative programs to help young students get involved in first-hand scientific research, exploration and investigation. We believe these programs inspire a passion for science and nurture inquisitive habits and reasoning skills. To achieve this goal, Science Alliance Network is focused on fostering Science Alliance branches nationwide. SAN offers many resources to make it easy for high school students and teachers to jump-start their own Science Alliance programs in their local area. </p>
     </div>
-    <!-- /.content-section-b -->
-    
-    <div class="banner">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-6">
-                    <h2>Learn More:</h2>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="list-inline banner-social-buttons">
-                        <li>
-                            <a href={{ url_for('home.getstarted') }} class="btn btn-default btn-lg"><span class="network-name">Getting Started</span></a>
-                        </li>
-                        <li>
-                            <a href={{ url_for('home.register') }} class="btn btn-default btn-lg"><span class="network-name">Register</span></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.banner -->
+</div>
+{% endblock %}
 
 
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-home').addClass('active');   
+});
+</script>
 {% endblock %}

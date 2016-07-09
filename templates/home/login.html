@@ -1,51 +1,33 @@
 {% extends "home/homebase.html" %}
 
-
 {% block content %}
+<h1>Log In</h1>
+<hr>
 
-<div class="banner-center">
+{% if error is defined %}
+<div class="alert alert-danger"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> <strong>Error:</strong> {{ error }} </div>
+{% endif %}
 
-        <div class="container">
-
-            <div class="row">
-                    <h1>Log In</h1>
-                    <h3>Science Alliance Network</h3>
-                    <hr class="intro-divider">
-            </div>
-
-        </div>
-    </div>
-
-<div class="content-section-a">
-
-        <div class="container">
-
-          {% if error is defined %}
-          <div class="alert alert-danger">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Error:</strong> {{ error }}
-          </div>
-          {% endif %}
-          
-            <div class="row">
-                <div class="col-md-7">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">Log In to Science Alliance.</h2>
-                    <p class="lead">
-                        <form method="post" action={{ url_for('home.login') }}>
-                            <input type="text" class="form-control" name="username" placeholder="Username" autofocus>
-                            <input type="password" class="form-control" name="password" placeholder="Password">
-                            <button type="submit" class="btn btn-default">Log In</button>
-                        </form>
-                    </p>
-                </div>
-                <div class="col-md-5"></div>
-            </div>
-
-        </div>
+<div class="row" style="text-align:center;">
+    <div class="col-lg-4 col-md-3 col-sm-2"></div>
+    <div class="col-lg-4 col-md-6 col-sm-8">
+        <h2>Log In to Science Alliance</h2>
+        <form method="post" action={{ url_for( 'home.login') }}>
+            <input style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Username" autofocus>
+            <input type="password" class="form-control" name="password" placeholder="Password">
+            <br />
+            <button type="submit" class="btn btn-default">Log In</button>
+        </form>
+        <hr> <a class="register-link" href={{ url_for( 'home.register') }}>Need an account? Register here.</a> </div>
+    <div class="col-lg-4 col-md-5 col-sm-2"></div>
+</div>
+{% endblock %}
 
 
-    </div>
-
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-login').addClass('active');   
+});
+</script>
 {% endblock %}
