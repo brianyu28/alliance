@@ -1,7 +1,31 @@
 {% extends "fair/fairbase.html" %}
 
 {% block contents %}
-contents
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Current Fairs</h4>
+        </div>
+        <div class="content">
+            Current fairs listed here.
+        </div>
+    </div>
+</div>
+
+{% if user.acct_type == "Administrator" %}
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Create a Fair</h4>
+        </div>
+        <div class="content">
+            Create a fair content.
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
 
