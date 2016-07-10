@@ -11,6 +11,9 @@
     <!-- Bootstrap-->
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='uikit-2.26.3/css/uikit.min.css') }}">
+   <script src="{{ url_for('static', filename='uikit-2.26.3/js/uikit.min.js') }}"></script>
 
     <!-- Animation library for notifications   -->
     <link href={{ url_for('static', filename='lbd/css/animate.min.css') }} rel="stylesheet"/>
@@ -20,9 +23,6 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="{{ url_for('static', filename='lbd/css/pe-icon-7-stroke.css') }}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='css/portal.css') }}" rel="stylesheet" />
-    
-<!--    <script src={{ url_for('static', filename='lbd/js/jquery-1.10.2.js') }} type="text/javascript"></script>-->
-    <script src={{ url_for('static', filename='lbd/js/bootstrap.min.js') }} type="text/javascript"></script>
     
      <!--  Checkbox, Radio & Switch Plugins -->
     <script src={{ url_for('static', filename='lbd/js/bootstrap-checkbox-radio-switch.js') }}></script>

@@ -11,3 +11,7 @@ def fair_page():
 @fair.route('/manage/')
 def manage():
     return render_template('manage.html', user=dbmain.currentUser())
+
+@fair.route('/register/')
+def register():
+    return redirect(url_for('fair.manage'))

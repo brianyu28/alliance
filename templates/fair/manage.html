@@ -20,17 +20,37 @@
             <h4 class="title">Create a Fair</h4>
         </div>
         <div class="content">
-            Create a fair content.
+        <form method="post" target="{{ url_for('fair.register') }}">
+           <input name="name" class="form-control" placeholder="Fair Name">
             <br />
-            
+        
             <div class="input-group input-append date">
-                <input id="datepicker" type="text" class="form-control" name="date" />
+                <input id="datepicker" type="text" class="form-control" name="date" placeholder="Fair Date" />
                 <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-            </div>            
-        </div>
+            </div>
+            <br />
+            <input name="location" class="form-control" placeholder="Fair Location">
+            <br />
+            <input type="checkbox" name="private" value="private" checked=true> Private Fair
+            <br />
+            <p><small>A private fair requires students and mentors to get approval before joining. Anyone can join a public fair without approval.</small></p>
+            <br /><br />
+            <button class="btn btn-primary" type="submit">Create Fair</button>
+        </form></div>
     </div>
 </div>
 {% endif %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Join a Fair</h4>
+        </div>
+        <div class="content">
+            Join fair goes here.
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
