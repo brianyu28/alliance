@@ -3,3 +3,13 @@
 {% block contents %}
 contents
 {% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+   $('#navbar-manage').addClass('active'); 
+});
+</script>
+{% endblock %}

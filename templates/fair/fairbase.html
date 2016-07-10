@@ -5,10 +5,18 @@
 <hr>
 <div class="row">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#">Manage</a></li>
-      <li><a href="#">Menu 1</a></li>
-      <li><a href="#">Menu 2</a></li>
-      <li><a href="#">Menu 3</a></li>
+      <li id="navbar-manage"><a href="#">Manage</a></li>
+      
+      {% if user.acct_type == "Administrator" %}
+      <li id="navbar-requests"><a href="#">Requests</a></li>
+      <li id="navbar-pairings"><a href="#">Pairings</a></li>
+      <li id="navbar-announcements"><a href="#">Announcements</a></li>
+      <li id="navbar-permissions"><a href="#">Permissions</a></li>
+      {% elif user.acct_type == "Mentor" %}
+      <li id="navbar-partner"><a href="#">Student</a></li>
+      {% elif user.acct_type == "Student" %}
+      <li id="navbar-partner"><a href="#">Mentor</a></li>
+      {% endif %}
     </ul>
 </div>
 <br />
