@@ -20,7 +20,8 @@
             <h4 class="title">Create a Fair</h4>
         </div>
         <div class="content">
-        <form method="post" target="{{ url_for('fair.register') }}">
+        <form method="post">
+          <input name="type" type="hidden" value="Register" />
            <input name="name" class="form-control" placeholder="Fair Name">
             <br />
         

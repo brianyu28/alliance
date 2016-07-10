@@ -40,3 +40,14 @@ def authenticate(username, password):
 def usernameAvailable(username):
     matches = db.users.find({"username" : username}).count()
     return True if matches == 0 else False
+
+def addFair(name, date, location, private):
+    fairs = db.fairs
+    fair = {
+        "name" : name,
+        "date" : date,
+        "location" : location,
+        "private" : private,
+    }
+    fair_id = fairs.insert_one(fair).inserted_id
+    return fair_id
