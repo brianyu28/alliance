@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 from model import helpers, dbmain
+from bson import ObjectId
 import re
 
 fair = Blueprint('fair', __name__,
@@ -17,9 +18,17 @@ def manage():
         date = request.form['date']
         location = request.form['location']
         private = 'private' in request.form
-        r = re.compile('\d{1,2}/\d{1,2}/\d{2,4}')
-        if r.match(date) is None:
+        r = re.compile('\d{1,2}/\d{1,2}/\d{4}')
+        if name == "":
+            error = "You did not specify a name for the fair."
+        elif r.match(date) is None:
             error = "You did not specify a valid date."
+        elif location == "":
+            error = "You did not specify a valid location."
         else:
-            dbmain.addFair(name, date, location, private)
-    return render_template('manage.html', user=dbmain.currentUser(), error=error)
+            fair_id = dbmain.addFair(name, date, location, private)
+            dbmain.addRegistration(ObjectId(session['id']), fair_id, True)
+            dbmain.changePrimaryFair(ObjectId(session['id']), fair_id)
+    # get a list of fairs that the user is registered for
+    registration = dbmain.fairsForUser(ObjectId(session['id']))
+    return render_template('manage.html', user=dbmain.currentUser(), registration=registration, error=error)

@@ -6,7 +6,6 @@ from helpers import *
 client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
 db = client.alliance
 
-# Interactions with the Users collection
 def addUser(username, hashed_pass, first, last, email, acct_type, school):
     users = db.users
     user = {
@@ -24,7 +23,7 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school):
 
 # gets the user by their ID
 def user(id):
-    return db.users.find_one({"_id" : ObjectId(id)})
+    return db.users.find_one({"_id" : id})
 
 def userByUsername(username):
     return db.users.find_one({"username" : username})
@@ -52,12 +51,30 @@ def addFair(name, date, location, private):
     fair_id = fairs.insert_one(fair).inserted_id
     return fair_id
 
+def changePrimaryFair(user, fair):
+    result = db.users.update_one({'_id' : user}, {'$set' : {"primary" : fair}})
+    return (result == 1)
+
+
 def addRegistration(user, fair, approved):
-    reg = db.fair_reg
+    registration = db.registration
     reg = {
         "user" : user,
         "fair" : fair,
-        "approved" : approved
+        "approved" : approved,
+        "permissions" : ["is_owner"]
     }
-    reg_id = fair_reg.insert_one(reg).inserted_id
+    reg_id = registration.insert_one(reg).inserted_id
     return reg_id
+
+def fairsForUser(user):
+    registration = db.registration
+    fairs = db.fairs
+    regs = registration.find({"user" : user})
+    fair_list = []
+    for reg in regs:
+        fair_list.append(fairs.find_one({"_id" : reg["fair"]}))
+    return fair_list
+
+def openFairsForUser(user):
+    

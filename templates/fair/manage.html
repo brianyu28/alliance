@@ -2,13 +2,41 @@
 
 {% block contents %}
 
+{% if error is defined and error != None %}
+<div class="alert alert-danger"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> <strong>Error:</strong> {{ error }} </div>
+{% endif %}
+
 <div class="row">
     <div class="card">
         <div class="header">
             <h4 class="title">Current Fairs</h4>
         </div>
-        <div class="content">
-            Current fairs listed here.
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Private</th>
+                    <th>Primary</th>
+                </thead>
+                <tbody>
+                    {% for fair in registration %}
+                    <tr>
+                        <td>{{ fair.name }}</td>
+                        <td>{{ fair.date }}</td>
+                        <td>{{ fair.location }}</td>
+                        <td>{% if fair.private %}Yes{% else %}No{% endif %}</td>
+                        <td>{% if fair['_id'] == user['primary'] %}Primary{% else %}No{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if registration|length == 0 %}
+                    <tr>
+                        <td colspan="5">You are not currently registered for any fairs.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
