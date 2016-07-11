@@ -24,14 +24,14 @@
                     
                     {# if admin, allow for editing #}
                     {% if user.acct_type == "Administrator" %}
-                    <tr onclick="fairDetails('{{ fair['_id']|string }}')">
+                    <tr onclick="fairDetails(event, '{{ fair['_id']|string }}')">
                     {% else %}
                     <tr>
                     {% endif %}
                         <td>{{ fair.name }}</td>
                         <td>{{ fair.date }}</td>
                         <td>{{ fair.location }}</td>
-                        <td>{% if fair['_id'] == user['primary'] %}Primary{% else %}No{% endif %}</td>
+                        <td onclick="">{% if fair['_id'] == user['primary'] %}Primary{% else %}<button onclick="makePrimary('{{ fair['_id']|string }}')" class="btn btn-xs btn-default">Make Primary</button>{% endif %}</td>
                     </tr>
                     {% endfor %}
                     {% if registration|length == 0 %}
@@ -127,7 +127,11 @@ $(document).ready(function() {
     $("#fair-detail-date").datepicker();
 });
     
-function fairDetails(id) {
+function fairDetails(event, id) {    
+    // if it's the make primary cell, then don't show the details
+    if (event.target.tagName === "BUTTON")
+        return;
+    
     var parameters = {
       id: id  
     };
@@ -150,10 +154,20 @@ function fairDetails(id) {
             
             $.post("{{ url_for('ajax.fair_update') }}", parameters, function(data, textStatus) {
                location.reload(); 
-            });
+            }, "json");
         })
     }, "json");
     
+}
+    
+function makePrimary(id) {
+    var parameters = {
+        id: id
+    }
+    
+    $.post("{{ url_for('ajax.make_primary') }}", parameters, function(data, textStatus) {
+        location.reload();
+    }, "json");
 }
 
 </script>

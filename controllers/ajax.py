@@ -14,4 +14,8 @@ def fair_details():
 def fair_update():
     dbmain.updateFair(ObjectId(request.form['id']), request.form['name'], request.form['date'], request.form['location'], request.form['private'])
     return jsonify(result="Success")
-    
+
+@ajax.route('/make_primary/', methods=['POST'])
+def make_primary():
+    dbmain.changePrimaryFair(ObjectId(session['id']), ObjectId(request.form['id']))
+    return jsonify(result="Success")
