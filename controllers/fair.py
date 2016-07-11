@@ -17,7 +17,7 @@ def manage():
         location = request.form['location']
         private = 'private' in request.form
         # this is supposed to work but doesn't yet
-        r = re.compile('\d/\d/\d{4}')
+        r = re.compile('\d{1,2}/\d{1,2}/\d{2,4}')
         if r.match(date) is None:
             print 'There is an error'
     return render_template('manage.html', user=dbmain.currentUser())
