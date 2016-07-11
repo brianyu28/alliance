@@ -28,7 +28,17 @@ def manage():
         else:
             fair_id = dbmain.addFair(name, date, location, private)
             dbmain.addRegistration(ObjectId(session['id']), fair_id, True)
+            dbmain.addPermission(ObjectId(session['id']), fair_id, "is_owner")
             dbmain.changePrimaryFair(ObjectId(session['id']), fair_id)
-    # get a list of fairs that the user is registered for
+    if request.method == 'POST' and request.form['type'] == 'Join':
+        fair = dbmain.fair(request.form['fair'])
+        approved = False if fair['private'] else True
+        dbmain.addRegistration(ObjectId(session['id']), ObjectId(request.form['fair']), approved)
+        dbmain.changePrimaryFair(ObjectId(session['id']), ObjectId(request.form['fair']))
+    if request.method == 'POST' and request.form['type'] == 'Leave':
+        dbmain.removeRegistration(ObjectId(session['id']), ObjectId(request.form['fair']))
+        if ObjectId(request.form['fair']) == dbmain.currentUser()['primary']:
+            dbmain.changePrimaryFair(ObjectId(session['id']), None)
     registration = dbmain.fairsForUser(ObjectId(session['id']))
-    return render_template('manage.html', user=dbmain.currentUser(), registration=registration, error=error)
+    unjoined = dbmain.unjoinedFairs(ObjectId(session['id']))
+    return render_template('manage.html', user=dbmain.currentUser(), registration=registration, unjoined=unjoined, error=error)

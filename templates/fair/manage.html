@@ -25,7 +25,7 @@
                     
                     {# if admin, allow for editing #}
                     {% if user.acct_type == "Administrator" %}
-                    <tr onclick="fairDetails(event, '{{ fair['_id']|string }}')">
+                    <tr onclick="fairDetails(event, '{{ fair['_id']|string }}'); return false;">
                     {% else %}
                     <tr>
                     {% endif %}
@@ -33,12 +33,12 @@
                         <td>{{ fair.date }}</td>
                         <td>{{ fair.location }}</td>
                         <td>{% if fair['approved'] %}Yes{% else %}Pending{% endif %}</td>
-                        <td onclick="">{% if fair['_id'] == user['primary'] %}Primary{% else %}<button onclick="makePrimary('{{ fair['_id']|string }}')" class="btn btn-xs btn-default">Make Primary</button>{% endif %}</td>
+                        <td>{% if fair['_id'] == user['primary'] %}Primary{% else %}<button onclick="makePrimary('{{ fair['_id']|string }}'); return false;" class="btn btn-xs btn-default">Make Primary</button>{% endif %}</td>
                     </tr>
                     {% endfor %}
                     {% if registration|length == 0 %}
                     <tr>
-                        <td colspan="4">You are not currently registered for any fairs.</td>
+                        <td colspan="5">You are not currently registered for any fairs.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -56,20 +56,20 @@
         <div class="content">
         <form method="post">
           <input name="type" type="hidden" value="Register" />
-           <input name="name" class="form-control" placeholder="Fair Name">
+           <input autocomplete="off" name="name" class="form-control" placeholder="Fair Name">
             <br />
         
-            <div class="input-group input-append date">
-                <input id="datepicker" type="text" class="form-control" name="date" placeholder="Fair Date" />
+            <div class="input-group input-append date" z-index="20">
+                <input autocomplete="off" id="datepicker" type="text" class="form-control datepicker" name="date" placeholder="Fair Date" />
                 <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
             </div>
             <br />
-            <input name="location" class="form-control" placeholder="Fair Location">
+            <input autocomplete="off" name="location" class="form-control" placeholder="Fair Location">
             <br />
             <input type="checkbox" name="private" value="private" checked=true> Private Fair
             <br />
             <p><small>A private fair requires students and mentors to get approval before joining. Anyone can join a public fair without approval.</small></p>
-            <br /><br />
+            <br />
             <button class="btn btn-primary" type="submit">Create Fair</button>
         </form></div>
     </div>
@@ -82,7 +82,38 @@
             <h4 class="title">Join a Fair</h4>
         </div>
         <div class="content">
-            Join fair goes here.
+            <form method="post">
+                <input name="type" type="hidden" value="Join" />
+                <select class="form-control" name="fair">
+                    <option value=0 disabled selected>Choose a Fair</option>
+                    {% for fair in unjoined %}
+                    <option value="{{ fair['_id'] }}">{{ fair.name }}</option>
+                    {% endfor %}
+                </select>
+                <br />
+                <button class="btn btn-primary" type="submit">Join Fair</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Leave a Fair</h4>
+        </div>
+        <div class="content">
+            <form method="post">
+                <input name="type" type="hidden" value="Leave" />
+                <select class="form-control" name="fair">
+                    <option value=0 disabled selected>Choose a Fair</option>
+                    {% for fair in registration %}
+                    <option value="{{ fair['_id'] }}">{{ fair.name }}</option>
+                    {% endfor %}
+                </select>
+                <br />
+                <button class="btn btn-danger" type="submit">Leave Fair</button>
+            </form>
         </div>
     </div>
 </div>
@@ -99,12 +130,12 @@
       </div>
       <div class="modal-body">
         Fair Name:<br />
-        <input type="text" class="form-control" id="fair-detail-name" placeholder="Fair Name"><br />
+        <input autocomplete="off" type="text" class="form-control" id="fair-detail-name" placeholder="Fair Name"><br />
         Fair Location:<br />
-        <input type="text" class="form-control" id="fair-detail-location" placeholder="Fair Location"><br />
+        <input autocomplete="off" type="text" class="form-control" id="fair-detail-location" placeholder="Fair Location"><br />
         Fair Date:<br />
         <div class="input-group input-append date">
-                <input id="fair-detail-date" type="text" class="form-control" placeholder="Fair Date" />
+                <input autocomplete="off" id="fair-detail-date" type="text" class="form-control datepicker" placeholder="Fair Date" />
                 <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
         <br />
@@ -125,8 +156,21 @@
 <script>
 $(document).ready(function() {
     $("#navbar-manage").addClass('active'); 
-    $("#datepicker").datepicker();
-    $("#fair-detail-date").datepicker();
+    dp1 = $("#datepicker").datepicker();
+    dp2 = $("#fair-detail-date").datepicker();
+    $("div").scroll(function() {
+      dp1.datepicker('hide');
+      $('#dp1').blur();
+      dp2.datepicker('hide');
+      $('#dp2').blur();
+    });
+
+    $(window).resize(function() {
+      dp1.datepicker('hide');
+      $('#dp1').blur();
+      dp2.datepicker('hide');
+      $('#dp2').blur();
+    });
 });
     
 function fairDetails(event, id) {    
@@ -155,7 +199,7 @@ function fairDetails(event, id) {
             }
             
             $.post("{{ url_for('ajax.fair_update') }}", parameters, function(data, textStatus) {
-               location.reload(); 
+               window.location.href = window.location.href;
             }, "json");
         })
     }, "json");
@@ -168,7 +212,7 @@ function makePrimary(id) {
     }
     
     $.post("{{ url_for('ajax.make_primary') }}", parameters, function(data, textStatus) {
-        location.reload();
+        window.location.href = window.location.href;
     }, "json");
 }
 

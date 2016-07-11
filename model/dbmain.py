@@ -72,11 +72,26 @@ def addRegistration(user, fair, approved):
     reg = {
         "user" : user,
         "fair" : fair,
-        "approved" : approved,
-        "permissions" : ["is_owner"]
+        "approved" : True if approved else False
     }
     reg_id = registration.insert_one(reg).inserted_id
     return reg_id
+
+def removeRegistration(user, fair):
+    result = db.registration.delete_one({"user":user, "fair":fair})
+    return (result == 1)
+
+def hasPermission(user, fair, permission):
+    reg = db.registration.find_one({"user":user, "fair":fair})
+    if "permissions" not in reg:
+        return False
+    permissions = reg["permissions"]
+    return permission in permissions
+
+def addPermission(user, fair, permission):
+    if not hasPermission(user, fair, permission):
+        db.registration.update({"user":user, "fair":fair}, {"$push" : {"permissions" : permission}})
+    return True
 
 def fairsForUser(user):
     registration = db.registration
@@ -88,3 +103,12 @@ def fairsForUser(user):
         fair['approved'] = reg['approved']
         fair_list.append(fair)
     return fair_list
+
+def unjoinedFairs(user):
+    registration = db.registration
+    fairs = db.fairs.find()
+    unjoined = []
+    for fair in fairs:
+        if registration.find({"user":user, "fair":fair["_id"]}).count() == 0:
+            unjoined.append(fair)
+    return unjoined

@@ -19,21 +19,21 @@
         <hr>
             <form method="post" action={{ url_for('home.register') }}>
                 <h5>Basic Information</h5>
-                <input style="margin-bottom:10px;" type="text" class="form-control" name="first" placeholder="First Name" autofocus>
-                <input style="margin-bottom:10px;" type="text" class="form-control" name="last" placeholder="Last Name">
-                <input type="email" class="form-control" name="email" placeholder="Email Address">
+                <input autocomplete="off" style="margin-bottom:10px;" type="text" class="form-control" name="first" placeholder="First Name" autofocus>
+                <input autocomplete="off" style="margin-bottom:10px;" type="text" class="form-control" name="last" placeholder="Last Name">
+                <input autocomplete="off" type="email" class="form-control" name="email" placeholder="Email Address">
                 <br />
                 <h5>Account Information</h5>
-                <input style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Desired Username">
-                <input style="margin-bottom:10px;" type="password" class="form-control" name="password" placeholder="Password">
-                <input style="margin-bottom:10px;" type="password" class="form-control" name="password_confirm" placeholder="Confirm Password">
+                <input autocomplete="off" style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Desired Username">
+                <input autocomplete="off" style="margin-bottom:10px;" type="password" class="form-control" name="password" placeholder="Password">
+                <input autocomplete="off" style="margin-bottom:10px;" type="password" class="form-control" name="password_confirm" placeholder="Confirm Password">
                 <select style="margin-bottom:10px;" class="form-control" name="acct_type">
                    <option value="None">Select Account Type</option>
                     <option value="Student">Student</option>
                     <option value="Mentor">Mentor</option>
                     <option value="Administrator">Administrator</option>
                 </select>
-                <input style="margin-bottom:10px;" type="text" class="form-control" name="school" placeholder="School">
+                <input autocomplete="off" style="margin-bottom:10px;" type="text" class="form-control" name="school" placeholder="School">
                 <button type="submit" class="btn btn-default">Register</button>
             </form>
 

@@ -13,8 +13,8 @@
     <div class="col-lg-4 col-md-6 col-sm-8">
         <h3>Log In to Science Alliance</h3>
         <form method="post" action={{ url_for( 'home.login') }}>
-            <input style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Username" autofocus>
-            <input type="password" class="form-control" name="password" placeholder="Password">
+            <input autocomplete="off" style="margin-bottom:10px;" type="text" class="form-control" name="username" placeholder="Username" autofocus>
+            <input autocomplete="off" type="password" class="form-control" name="password" placeholder="Password">
             <br />
             <button type="submit" class="btn btn-default">Log In</button>
         </form>
