@@ -23,7 +23,7 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school):
 
 # gets the user by their ID
 def user(id):
-    return db.users.find_one({"_id" : id})
+    return db.users.find_one({"_id" : ObjectId(id)})
 
 def userByUsername(username):
     return db.users.find_one({"username" : username})
@@ -50,6 +50,9 @@ def addFair(name, date, location, private):
     }
     fair_id = fairs.insert_one(fair).inserted_id
     return fair_id
+
+def fair(id):
+    return db.fairs.find_one({"_id" : ObjectId(id)})
 
 def changePrimaryFair(user, fair):
     result = db.users.update_one({'_id' : user}, {'$set' : {"primary" : fair}})
