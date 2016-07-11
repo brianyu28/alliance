@@ -75,6 +75,3 @@ def fairsForUser(user):
     for reg in regs:
         fair_list.append(fairs.find_one({"_id" : reg["fair"]}))
     return fair_list
-
-def openFairsForUser(user):
-    

@@ -17,22 +17,26 @@
                     <th>Name</th>
                     <th>Date</th>
                     <th>Location</th>
-                    <th>Private</th>
                     <th>Primary</th>
                 </thead>
                 <tbody>
                     {% for fair in registration %}
+                    
+                    {# if admin, allow for editing #}
+                    {% if user.acct_type == "Administrator" %}
+                    <tr onclick="fairDetails('{{ fair['_id']|string }}')">
+                    {% else %}
                     <tr>
+                    {% endif %}
                         <td>{{ fair.name }}</td>
                         <td>{{ fair.date }}</td>
                         <td>{{ fair.location }}</td>
-                        <td>{% if fair.private %}Yes{% else %}No{% endif %}</td>
                         <td>{% if fair['_id'] == user['primary'] %}Primary{% else %}No{% endif %}</td>
                     </tr>
                     {% endfor %}
                     {% if registration|length == 0 %}
                     <tr>
-                        <td colspan="5">You are not currently registered for any fairs.</td>
+                        <td colspan="4">You are not currently registered for any fairs.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -83,13 +87,48 @@
 
 {% endblock %}
 
+{% block outerbody %}
+<div id="fair-detail" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="fair-name">Fair Name</h4>
+      </div>
+      <div class="modal-body">
+        Fair Name:<br />
+        <input type="text" class="form-control" id="fair-detail-name" placeholder="Fair Name"><br />
+        Fair Location:<br />
+        <input type="text" class="form-control" id="fair-detail-location" placeholder="Fair Location"><br />
+        Fair Date:<br />
+        <div class="input-group input-append date">
+                <input id="fair-detail-date" type="text" class="form-control" placeholder="Fair Date" />
+                <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+        <br />
+        <input type="checkbox" id="fair-detail-private" value="private" checked=true> Private Fair<br />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
 
 {% block script %}
 {{ super() }}
 <script>
 $(document).ready(function() {
-   $('#navbar-manage').addClass('active'); 
-    $( "#datepicker" ).datepicker();
+    $("#navbar-manage").addClass('active'); 
+    $("#datepicker").datepicker();
+    $("#fair-detail-date").datepicker();
 });
+    
+function fairDetails(id) {
+    $('#fair-detail').modal();
+}
 </script>
 {% endblock %}
