@@ -5,10 +5,13 @@ from bson import ObjectId
 ajax = Blueprint('ajax', __name__,
                         template_folder='../templates/ajax')
 
-@ajax.route('/fair_details/', methods=['GET', 'POST'])
+@ajax.route('/fair_details/', methods=['POST'])
 def fair_details():
-    if request.method == 'GET':
-        return jsonify(result="Failed. Data must be submitted via POST request.")
-    elif request.method == 'POST':
-        fair = dbmain.fair(request.form['id'])
-        return jsonify(name=fair['name'], location=fair['location'], date=fair['date'], id=str(fair['_id']), private=fair['private'])
+    fair = dbmain.fair(request.form['id'])
+    return jsonify(name=fair['name'], location=fair['location'], date=fair['date'], id=str(fair['_id']), private=fair['private'])
+    
+@ajax.route('/fair_update/', methods=['POST'])
+def fair_update():
+    dbmain.updateFair(ObjectId(request.form['id']), request.form['name'], request.form['date'], request.form['location'], request.form['private'])
+    return jsonify(result="Success")
+    

@@ -54,10 +54,18 @@ def addFair(name, date, location, private):
 def fair(id):
     return db.fairs.find_one({"_id" : ObjectId(id)})
 
+def updateFair(id, name, date, location, private):
+    result = db.fairs.update_one({'_id' : id}, {'$set' : {
+        "name" : name,
+        "date" : date,
+        "location" : location,
+        "private" : private
+    }})
+    return (result == 1)
+
 def changePrimaryFair(user, fair):
     result = db.users.update_one({'_id' : user}, {'$set' : {"primary" : fair}})
     return (result == 1)
-
 
 def addRegistration(user, fair, approved):
     registration = db.registration

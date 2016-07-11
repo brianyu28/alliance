@@ -93,7 +93,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title" id="fair-name">Fair Name</h4>
+        <h4 class="modal-title" id="fair-detail-header">Fair Name</h4>
       </div>
       <div class="modal-body">
         Fair Name:<br />
@@ -110,7 +110,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="fair-update">Update</button>
       </div>
     </div>
   </div>
@@ -133,9 +133,28 @@ function fairDetails(id) {
     };
     
     $.post("{{ url_for('ajax.fair_details') }}", parameters, function(data, textStatus) {
-        console.log(data);
+        $('#fair-detail-header').html(data['name']);
+        $('#fair-detail-name').val(data['name']);
+        $('#fair-detail-location').val(data['location']);
+        $('#fair-detail-date').val(data['date']);
+        $('#fair-detail-private').prop('checked', data['private']);
+        $('#fair-detail').modal();
+        $('#fair-update').click(function () {
+            var parameters = {
+                id : id,
+                name : $('#fair-detail-name').val(),
+                date : $('#fair-detail-date').val(),
+                location : $('#fair-detail-location').val(),
+                private : $('#fair-detail-private').prop('checked')
+            }
+            
+            $.post("{{ url_for('ajax.fair_update') }}", parameters, function(data, textStatus) {
+               location.reload(); 
+            });
+        })
     }, "json");
-    $('#fair-detail').modal();
+    
 }
+
 </script>
 {% endblock %}
