@@ -51,3 +51,13 @@ def addFair(name, date, location, private):
     }
     fair_id = fairs.insert_one(fair).inserted_id
     return fair_id
+
+def addRegistration(user, fair, approved):
+    reg = db.fair_reg
+    reg = {
+        "user" : user,
+        "fair" : fair,
+        "approved" : approved
+    }
+    reg_id = fair_reg.insert_one(reg).inserted_id
+    return reg_id
