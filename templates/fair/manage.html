@@ -17,6 +17,7 @@
                     <th>Name</th>
                     <th>Date</th>
                     <th>Location</th>
+                    <th>Approved</th>
                     <th>Primary</th>
                 </thead>
                 <tbody>
@@ -31,6 +32,7 @@
                         <td>{{ fair.name }}</td>
                         <td>{{ fair.date }}</td>
                         <td>{{ fair.location }}</td>
+                        <td>{% if fair['approved'] %}Yes{% else %}Pending{% endif %}</td>
                         <td onclick="">{% if fair['_id'] == user['primary'] %}Primary{% else %}<button onclick="makePrimary('{{ fair['_id']|string }}')" class="btn btn-xs btn-default">Make Primary</button>{% endif %}</td>
                     </tr>
                     {% endfor %}

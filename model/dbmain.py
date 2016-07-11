@@ -84,5 +84,7 @@ def fairsForUser(user):
     regs = registration.find({"user" : user})
     fair_list = []
     for reg in regs:
-        fair_list.append(fairs.find_one({"_id" : reg["fair"]}))
+        fair = fairs.find_one({"_id" : reg["fair"]})
+        fair['approved'] = reg['approved']
+        fair_list.append(fair)
     return fair_list
