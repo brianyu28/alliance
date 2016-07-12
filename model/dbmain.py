@@ -33,6 +33,8 @@ def currentUser():
 
 def authenticate(username, password):
     user = userByUsername(username)
+    if user == None:
+        return False
     hashed_pass = user["password"]
     return check_password(password, hashed_pass)
 

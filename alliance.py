@@ -8,6 +8,6 @@ app.register_blueprint(home.home)
 app.register_blueprint(portal.portal)
 app.register_blueprint(fair.fair, url_prefix='/fair')
 app.register_blueprint(ajax.ajax, url_prefix='/ajax')
- 
+
 if __name__ == "__main__":
     app.run()
