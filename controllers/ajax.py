@@ -30,3 +30,29 @@ def reject_user():
     dbmain.removeRegistration(ObjectId(request.form['user']), ObjectId(request.form['fair']))
     return jsonify(result="Success")
 
+@ajax.route('/students_to_pair/', methods=['POST'])
+def students_to_pair():
+    students = dbmain.studentsToPair(ObjectId(request.form['fair']), request.form['repeats'])
+    result = []
+    for student in students:
+        result.append({"id":str(student['_id']), "first":student['first'], "last":student['last']})
+    return jsonify(result)
+
+@ajax.route('/mentors_to_pair/', methods=['POST'])
+def mentors_to_pair():
+    mentors = dbmain.mentorsToPair(ObjectId(request.form['fair']), request.form['repeats'])
+    result = []
+    for mentor in mentors:
+        result.append({"id":str(mentor['_id']), "first":mentor['first'], "last":mentor['last']})
+    return jsonify(result)
+
+@ajax.route('/pair/', methods=['POST'])
+def pair():
+    if not dbmain.pairingExists(ObjectId(request.form['fair']), ObjectId(request.form['student']), ObjectId(request.form['mentor'])):
+        dbmain.addPairing(ObjectId(request.form['fair']), ObjectId(request.form['student']), ObjectId(request.form['mentor']))
+    return jsonify(result="Success")
+
+@ajax.route('/remove_pairing/', methods=['POST'])
+def remove_pairing():
+    dbmain.deletePairingByID(ObjectId(request.form['id']))
+    return jsonify(result="Success")

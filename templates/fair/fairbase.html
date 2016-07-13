@@ -9,7 +9,8 @@
       
       {% if user.acct_type == "Administrator" %}
       <li id="navbar-requests"><a href="{{ url_for('fair.requests') }}">Requests</a></li>
-      <li id="navbar-pairings"><a href="#">Pairings</a></li>
+      <li id="navbar-pairings"><a href="{{ url_for('fair.pair') }}">Pairings</a></li>
+      <li id="navbar-pairings"><a href="#">Trainers</a></li>
       <li id="navbar-announcements"><a href="#">Announcements</a></li>
       <li id="navbar-permissions"><a href="#">Permissions</a></li>
       {% elif user.acct_type == "Mentor" %}

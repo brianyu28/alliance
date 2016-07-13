@@ -143,3 +143,49 @@ def pendingRequestsForFair(fair):
     for reg in regs:
         lst.append(db.users.find_one({"_id":reg['user']}))
     return lst
+
+def studentsToPair(fair, repeats):
+    repeats = (repeats == 'true')
+    regs = db.registration.find({"fair":fair, "approved":True})
+    lst = []
+    for reg in regs:
+        user = db.users.find_one({"_id":reg['user']})
+        if user['acct_type'] == "Student":
+            if repeats or (db.pairings.find({"fair":fair, "student":reg['user']}).count() == 0):
+                lst.append(user)
+    return sorted(lst, key=lambda k: k['last'])
+
+def mentorsToPair(fair, repeats):
+    repeats = (repeats == 'true')
+    regs = db.registration.find({"fair":fair, "approved":True})
+    lst = []
+    for reg in regs:
+        user = db.users.find_one({"_id":reg['user']})
+        if user['acct_type'] == "Mentor":
+            if repeats or (db.pairings.find({"fair":fair, "mentor":reg['user']}).count() == 0):
+                lst.append(user)
+    return sorted(lst, key=lambda k: k['last'])
+
+def addPairing(fair, student, mentor):
+    pairing = {
+        "fair" : fair,
+        "student" : student,
+        "mentor" : mentor
+    }
+    return db.pairings.insert_one(pairing).inserted_id
+
+def deletePairing(fair, student, mentor):
+    return db.pairings.delete_one({"fair":fair, "student":student, "mentor":mentor})
+
+def deletePairingByID(id):
+    return db.pairings.delete_one({"_id":id})
+
+def pairingExists(fair, student, mentor):
+    return (db.pairings.find({"fair":fair, "student":student, "mentor":mentor}).count() > 0)
+
+def pairingsForFair(fair):
+    pairings = db.pairings.find({"fair":fair})
+    lst = []
+    for pairing in pairings:
+        lst.append({"_id":pairing["_id"], "student":db.users.find_one({"_id":pairing["student"]}), "mentor":db.users.find_one({"_id":pairing["mentor"]})})
+    return lst

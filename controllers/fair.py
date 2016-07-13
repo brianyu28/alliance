@@ -69,3 +69,15 @@ def requests():
         elif request['acct_type'] == "Administrator":
             admins.append(request)
     return render_template('requests.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), students=students, mentors=mentors, admins=admins)
+
+@fair.route('/pair/')
+def pair():
+    if not dbmain.isAdmin():
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    pfid = dbmain.currentPFID()
+    if pfid == None:
+        return render_template('errors/no_primary_fair.html', user=dbmain.currentUser())
+    if not dbmain.permissionCheck(ObjectId(session['id']), pfid, "can_pair_users"):
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    pairings = dbmain.pairingsForFair(pfid)
+    return render_template('pair.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), pairings=pairings)

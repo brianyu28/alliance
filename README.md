@@ -17,6 +17,7 @@ Username: allianceweb
 `users`: username, password, first, last, email, acct_type, school, primary
 `fairs`: name, date, location, private
 `registration`: user (id), fair (id), approved, permissions (array)
+`pairings`: fair (id), student (id), mentor (id)
 
 ### Types
 
@@ -27,3 +28,4 @@ Account Types: Student, Mentor, Administrator
 `is_owner`: owner of the fair
 `full_access`: total access to controlling fair, except permission changes or delete
 `can_approve_users`: allowed to approve users to fair
+`can_pair_users`: allowed to pair users together
