@@ -17,6 +17,7 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school):
         "acct_type": acct_type,
         "school": school,
         "primary": None,
+        "primary_partner": None
     }
     user_id = users.insert_one(user).inserted_id
     return user_id
@@ -33,7 +34,11 @@ def currentUser():
 
 # returns current primary fair ID
 def currentPFID():
-    return currentUser()['primary']
+    pfid = currentUser()['primary']
+    if db.registration.find({"user":currentUser()['_id'], "fair":pfid}).count() > 0:
+        return pfid
+    else:
+        return None
 
 def currentFair():
     return db.fairs.find_one({"_id":currentPFID()})
@@ -78,6 +83,14 @@ def updateFair(id, name, date, location, private):
 def changePrimaryFair(user, fair):
     result = db.users.update_one({'_id' : user}, {'$set' : {"primary" : fair}})
     return (result == 1)
+
+def changePrimaryPartner(user, partner):
+    result = db.users.update_one({'_id':user}, {'$set' : {"primary_partner" : partner}})
+    return (result == 1)
+
+def primaryPartner(user):
+    partner = db.users.find_one({"_id":user})["primary_partner"]
+    if db.registration
 
 def addRegistration(user, fair, approved):
     registration = db.registration
@@ -189,3 +202,4 @@ def pairingsForFair(fair):
     for pairing in pairings:
         lst.append({"_id":pairing["_id"], "student":db.users.find_one({"_id":pairing["student"]}), "mentor":db.users.find_one({"_id":pairing["mentor"]})})
     return lst
+

@@ -1,0 +1,38 @@
+{% extends "fair/fairbase.html" %}
+
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Current Mentor Trainers</h4>
+        </div>
+        <div class="content">
+            <table id="pairing-table" class="table table-striped table-bordered" style="font-size:14px;" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Mentor</th>
+                        <th>Trainer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-trainers").addClass('active');
+    $('#pairing-table').DataTable();
+});
+   
+</script>
+{% endblock %}
