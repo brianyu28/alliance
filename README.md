@@ -26,3 +26,4 @@ Account Types: Student, Mentor, Administrator
 
 `is_owner`: owner of the fair
 `full_access`: total access to controlling fair, except permission changes or delete
+`can_approve_users`: allowed to approve users to fair

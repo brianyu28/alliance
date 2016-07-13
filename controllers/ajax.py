@@ -19,3 +19,14 @@ def fair_update():
 def make_primary():
     dbmain.changePrimaryFair(ObjectId(session['id']), ObjectId(request.form['id']))
     return jsonify(result="Success")
+
+@ajax.route('/approve_user/', methods=['POST'])
+def approve_user():
+    dbmain.approveUser(ObjectId(request.form['user']), ObjectId(request.form['fair']))
+    return jsonify(result="Success")
+
+@ajax.route('/reject_user/', methods=['POST'])
+def reject_user():
+    dbmain.removeRegistration(ObjectId(request.form['user']), ObjectId(request.form['fair']))
+    return jsonify(result="Success")
+

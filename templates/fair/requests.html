@@ -1,0 +1,139 @@
+{% extends "fair/fairbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Requests to Join {{ fair.name }} : Students ({{ students|length }})</h4>
+        </div>
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Approve</th>
+                    <th>Reject</th>
+                    <th>Name</th>
+                    <th>School</th>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td id="approve{{ student['_id'] }}"><button onclick="approveUser('{{ student['_id']|string }}')" class="btn btn-xs btn-primary">Approve</button></td>
+                        <td id="reject{{ student['_id'] }}"><button onclick="rejectUser('{{ student['_id']|string }}')" class="btn btn-xs btn-danger">Reject</button></td>
+                        <td>{{ student.first }} {{ student.last }}</td>
+                        <td>{{ student.school }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if students|length == 0 %}
+                    <tr>
+                        <td colspan="4">There are currently no requests from students to join this fair.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Requests to Join {{ fair.name }} : Mentors ({{ mentors|length }})</h4>
+        </div>
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Approve</th>
+                    <th>Reject</th>
+                    <th>Name</th>
+                    <th>School</th>
+                </thead>
+                <tbody>
+                    {% for mentor in mentors %}
+                    <tr>
+                        <td id="approve{{ mentor['_id'] }}"><button onclick="approveUser('{{ mentor['_id']|string }}')" class="btn btn-xs btn-primary">Approve</button></td>
+                        <td id="reject{{ mentor['_id'] }}"><button onclick="rejectUser('{{ mentor['_id']|string }}')" class="btn btn-xs btn-danger">Reject</button></td>
+                        <td>{{ mentor.first }} {{ mentor.last }}</td>
+                        <td>{{ mentor.school }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if mentors|length == 0 %}
+                    <tr>
+                        <td colspan="4">There are currently no requests from mentors to join this fair.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Requests to Join {{ fair.name }} : Administrators ({{ admins|length }})</h4>
+        </div>
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Approve</th>
+                    <th>Reject</th>
+                    <th>Name</th>
+                    <th>School</th>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                    <tr>
+                        <td id="approve{{ admin['_id'] }}"><button onclick="approveUser('{{ admin['_id']|string }}')" class="btn btn-xs btn-primary">Approve</button></td>
+                        <td id="reject{{ admin['_id'] }}"><button onclick="rejectUser('{{ admin['_id']|string }}')" class="btn btn-xs btn-danger">Reject</button></td>
+                        <td>{{ admin.first }} {{ admin.last }}</td>
+                        <td>{{ admin.school }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if admins|length == 0 %}
+                    <tr>
+                        <td colspan="4">There are currently no requests from administrators to join this fair.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-requests").addClass('active'); 
+});
+    
+function approveUser(id) {
+    var parameters = {
+        user: id,
+        fair: "{{ fair['_id']|string }}"
+    }
+    
+    $.post("{{ url_for('ajax.approve_user') }}", parameters, function(data, textStatus) {
+        $('#approve' + id).html("Approved");
+        $('#reject' + id).html("");
+    }, "json");
+}
+    
+function rejectUser(id) {
+    var parameters = {
+        user: id,
+        fair: "{{ fair['_id']|string }}"
+    }
+    
+    $.post("{{ url_for('ajax.reject_user') }}", parameters, function(data, textStatus) {
+        $('#approve' + id).html("");
+        $('#reject' + id).html("Rejected");
+    }, "json");
+}
+
+</script>
+{% endblock %}

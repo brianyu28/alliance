@@ -6,6 +6,11 @@ import re
 fair = Blueprint('fair', __name__,
                         template_folder='../templates/fair')
 
+@fair.before_request
+def check():
+    if 'id' not in session:
+        return redirect(url_for('home.homepage'))
+
 @fair.route('/')
 def fair_page():
     return redirect(url_for('fair.manage'))
@@ -42,3 +47,25 @@ def manage():
     registration = dbmain.fairsForUser(ObjectId(session['id']))
     unjoined = dbmain.unjoinedFairs(ObjectId(session['id']))
     return render_template('manage.html', user=dbmain.currentUser(), registration=registration, unjoined=unjoined, error=error)
+
+@fair.route('/requests/')
+def requests():
+    if not dbmain.isAdmin():
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    pfid = dbmain.currentPFID()
+    if pfid == None:
+        return render_template('errors/no_primary_fair.html', user=dbmain.currentUser())
+    if not dbmain.permissionCheck(ObjectId(session['id']), pfid, "can_approve_users"):
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    requests = dbmain.pendingRequestsForFair(pfid)
+    students = []
+    mentors = []
+    admins = []
+    for request in requests:
+        if request['acct_type'] == "Student":
+            students.append(request)
+        elif request['acct_type'] == "Mentor":
+            mentors.append(request)
+        elif request['acct_type'] == "Administrator":
+            admins.append(request)
+    return render_template('requests.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), students=students, mentors=mentors, admins=admins)

@@ -31,6 +31,16 @@ def userByUsername(username):
 def currentUser():
     return db.users.find_one({"_id" : ObjectId(session["id"])})
 
+# returns current primary fair ID
+def currentPFID():
+    return currentUser()['primary']
+
+def currentFair():
+    return db.fairs.find_one({"_id":currentPFID()})
+
+def isAdmin():
+    return (currentUser()['acct_type'] == "Administrator")
+
 def authenticate(username, password):
     user = userByUsername(username)
     if user == None:
@@ -83,12 +93,24 @@ def removeRegistration(user, fair):
     result = db.registration.delete_one({"user":user, "fair":fair})
     return (result == 1)
 
+def approveUser(user, fair):
+    result = db.registration.update_one({"user":user, "fair":fair}, {"$set": {"approved":True}})
+    return (result == 1)
+
 def hasPermission(user, fair, permission):
     reg = db.registration.find_one({"user":user, "fair":fair})
     if "permissions" not in reg:
         return False
     permissions = reg["permissions"]
     return permission in permissions
+
+# checks to see if user is allowed to perform operation:
+def permissionCheck(user, fair, permission):
+    reg = db.registration.find_one({"user":user, "fair":fair})
+    if "permissions" not in reg:
+        return False
+    permissions = reg["permissions"]
+    return (permission in permissions) or ("is_owner" in permissions) or ("full_access" in permissions)
 
 def addPermission(user, fair, permission):
     if not hasPermission(user, fair, permission):
@@ -114,3 +136,10 @@ def unjoinedFairs(user):
         if registration.find({"user":user, "fair":fair["_id"]}).count() == 0:
             unjoined.append(fair)
     return unjoined
+
+def pendingRequestsForFair(fair):
+    regs = db.registration.find({"fair":fair, "approved":False})
+    lst = []
+    for reg in regs:
+        lst.append(db.users.find_one({"_id":reg['user']}))
+    return lst

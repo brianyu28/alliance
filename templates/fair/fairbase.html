@@ -5,10 +5,10 @@
 <hr>
 <div class="row">
     <ul class="nav nav-tabs">
-      <li id="navbar-manage"><a href="#">Manage</a></li>
+      <li id="navbar-manage"><a href="{{ url_for('fair.manage') }}">Manage</a></li>
       
       {% if user.acct_type == "Administrator" %}
-      <li id="navbar-requests"><a href="#">Requests</a></li>
+      <li id="navbar-requests"><a href="{{ url_for('fair.requests') }}">Requests</a></li>
       <li id="navbar-pairings"><a href="#">Pairings</a></li>
       <li id="navbar-announcements"><a href="#">Announcements</a></li>
       <li id="navbar-permissions"><a href="#">Permissions</a></li>

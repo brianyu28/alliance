@@ -1,0 +1,21 @@
+{% extends "portal/portalbase.html" %}
+
+
+{% block content %}
+<h2>Error: Permissions</h2>
+<hr>
+<div class="row">
+   <div class="col">
+       You attempted to access a page that you are not authorized to access. If you believe you have reached this page in error, please contact your fair administrator.
+   </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-portal').addClass('active');   
+});
+</script>
+{% endblock %}
