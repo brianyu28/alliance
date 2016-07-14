@@ -18,6 +18,8 @@ Username: allianceweb
 `fairs`: name, date, location, private
 `registration`: user (id), fair (id), approved, permissions (array)
 `pairings`: fair (id), student (id), mentor (id)
+`trainings`: fair (id), mentor (id), trainer (id)
+`announcements`: fair (id), author (id), title, contents
 
 ### Types
 

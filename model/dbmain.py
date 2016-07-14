@@ -1,4 +1,5 @@
 import pymongo
+import datetime
 from pymongo import MongoClient
 from bson import ObjectId
 from flask import session
@@ -6,7 +7,7 @@ from helpers import *
 client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
 db = client.alliance
 
-def addUser(username, hashed_pass, first, last, email, acct_type, school):
+def addUser(username, hashed_pass, first, last, email, acct_type, school, timezone):
     users = db.users
     user = {
         "username": username,
@@ -16,6 +17,7 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school):
         "email": email,
         "acct_type": acct_type,
         "school": school,
+        "timezone": timezone,
         "primary": None,
         "primary_partner": None
     }
@@ -90,7 +92,13 @@ def changePrimaryPartner(user, partner):
 
 def primaryPartner(user):
     partner = db.users.find_one({"_id":user})["primary_partner"]
-    if db.registration
+    if (db.pairings.find({"student":user, "mentor":partner}).count() > 0) or (db.pairings.find({"mentor":user, "student":partner}).count() > 0):
+        return partner
+    else:
+        return None
+    
+def hasPrimaryPartner(user):
+    return (primaryPartner(user) != None)
 
 def addRegistration(user, fair, approved):
     registration = db.registration
@@ -129,6 +137,9 @@ def addPermission(user, fair, permission):
     if not hasPermission(user, fair, permission):
         db.registration.update({"user":user, "fair":fair}, {"$push" : {"permissions" : permission}})
     return True
+
+def clearPermissions(user, fair):
+    db.registration.update({"user":user, "fair":fair}, {"permissions" : []})
 
 def fairsForUser(user):
     registration = db.registration
@@ -203,3 +214,66 @@ def pairingsForFair(fair):
         lst.append({"_id":pairing["_id"], "student":db.users.find_one({"_id":pairing["student"]}), "mentor":db.users.find_one({"_id":pairing["mentor"]})})
     return lst
 
+def assignTrainer(fair, mentor, trainer):
+    training = {
+        "fair" : fair,
+        "mentor" : mentor,
+        "trainer" : trainer
+    }
+    return db.trainings.insert_one(training).inserted_id
+
+# gets list of trainer pairings for the fair
+def trainersForFair(fair):
+    pairings = db.trainings.find({"fair":fair})
+    lst = []
+    for pairing in pairings:
+        lst.append({"_id":pairing["_id"], "mentor":db.users.find_one({"_id":pairing["mentor"]}), "trainer":db.users.find_one({"_id":pairing["trainer"]})})
+    return lst
+
+def mentorsNeedingTrainers(fair, repeats):
+    repeats = (repeats == 'true')
+    regs = db.registration.find({"fair":fair, "approved":True})
+    lst = []
+    for reg in regs:
+        user = db.users.find_one({"_id":reg['user']})
+        if user['acct_type'] == "Mentor":
+            if repeats or (db.trainings.find({"fair":fair, "mentor":reg['user']}).count() == 0):
+                lst.append(user)
+    return sorted(lst, key=lambda k: k['last'])
+
+# gets a list of of administrators for fair
+def administrators(fair):
+    regs = db.registration.find({"fair":fair, "approved":True})
+    lst = []
+    for reg in regs:
+        user = db.users.find_one({"_id":reg["user"]})
+        if user['acct_type'] == "Administrator":
+            lst.append(user)
+    return sorted(lst, key=lambda k:k['last'])
+
+def trainingExists(fair, mentor, trainer):
+    return (db.pairings.find({"fair":fair, "mentor":mentor, "trainer":trainer}).count() > 0)
+
+def deleteTrainingByID(id):
+    return db.trainings.delete_one({"_id":id})
+
+def addAnnouncement(fair, author, datetime, title, contents):
+    announcement = {
+        "fair": fair,
+        "author": author,
+        "datetime": datetime,
+        "title": title,
+        "contents": contents
+    }
+    return db.announcements.insert_one(announcement).inserted_id
+
+def deleteAnnouncementByID(id):
+    return db.announcements.delete_one({"_id":id})
+
+def announcements(fair):
+    announces = db.announcements.find({"fair":fair})
+    result = []
+    for announce in announces:
+        announce["_id"] = str(announce["_id"])
+        result.append(announce)
+    return result

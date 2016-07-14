@@ -50,9 +50,40 @@ def mentors_to_pair():
 def pair():
     if not dbmain.pairingExists(ObjectId(request.form['fair']), ObjectId(request.form['student']), ObjectId(request.form['mentor'])):
         dbmain.addPairing(ObjectId(request.form['fair']), ObjectId(request.form['student']), ObjectId(request.form['mentor']))
+        if not dbmain.hasPrimaryPartner(ObjectId(request.form['student'])):
+            dbmain.changePrimaryPartner(ObjectId(request.form['student']), ObjectId(request.form['mentor']))
+        if not dbmain.hasPrimaryPartner(ObjectId(request.form['mentor'])):
+            dbmain.changePrimaryPartner(ObjectId(request.form['mentor']), ObjectId(request.form['student']))
     return jsonify(result="Success")
 
 @ajax.route('/remove_pairing/', methods=['POST'])
 def remove_pairing():
     dbmain.deletePairingByID(ObjectId(request.form['id']))
+    return jsonify(result="Success")
+
+@ajax.route('/mentors_needing_trainers/', methods=['POST'])
+def mentors_needing_trainers():
+    mentors = dbmain.mentorsNeedingTrainers(ObjectId(request.form['fair']), request.form['repeats'])
+    result = []
+    for mentor in mentors:
+        result.append({"id":str(mentor['_id']), "first":mentor['first'], "last":mentor['last']})
+    return jsonify(result)
+    
+@ajax.route('/fair_administrators/', methods=['POST'])
+def fair_administrators():
+    administrators = dbmain.administrators(ObjectId(request.form['fair']))
+    result = []
+    for admin in administrators:
+        result.append({"id":str(admin["_id"]), "first":admin["first"], "last":admin["last"]})
+    return jsonify(result)
+
+@ajax.route('/pair_trainer/', methods=['POST'])
+def pair_trainer():
+    if not dbmain.trainingExists(ObjectId(request.form['fair']), ObjectId(request.form['mentor']), ObjectId(request.form['trainer'])):
+        dbmain.assignTrainer(ObjectId(request.form['fair']), ObjectId(request.form['mentor']), ObjectId(request.form['trainer']))
+    return jsonify(result="Success")
+
+@ajax.route('/remove_training/', methods=['POST'])
+def remove_training():
+    dbmain.deleteTrainingByID(ObjectId(request.form['id']))
     return jsonify(result="Success")

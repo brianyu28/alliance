@@ -34,15 +34,14 @@
 <div class="row">
     <div class="card">
         <div class="header">
-            <h4 class="title">Current Mentor Trainer Assignments</h4>
+            <h4 class="title">Announcements</h4>
         </div>
         <div class="content">
             <table id="pairing-table" class="table table-striped table-bordered" style="font-size:14px;" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>Mentor</th>
-                        <th>Trainer</th>
-                        <th>Delete Pairing</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,67 +65,9 @@
 {{ super() }}
 <script>
 $(document).ready(function() {
-    $("#navbar-trainers").addClass('active');
-    $('#mentor-repeats').prop('checked', false);
-    fillMentorPairing();
-    fillTrainerPairing();
-    $('#mentor-repeats').change(function() {
-        fillMentorPairing();
-    });
-    $('#pairing-table').DataTable();
+    $("#navbar-announcements").addClass('active');
+    $('#announcements-table').DataTable();
 });
-    
-function fillMentorPairing() {
-    var parameters = {
-        fair: "{{ fair['_id']|string }}",
-        repeats: $('#mentor-repeats').prop('checked')
-    }
-        
-    $.post("{{ url_for('ajax.mentors_needing_trainers') }}", parameters, function(data, textStatus) {
-        contents = "<option value=0 disabled selected>Select a Mentor</option>";
-        for (var i = 0; i <data.length; i++) {
-            contents += "<option value='" + data[i]['id'] + "'>" + data[i]['first'] + " " + data[i]['last'] + "</option>";
-        }
-        $('#mentor-select').html(contents);
-    }, "json");
-}
-    
-function fillTrainerPairing() {
-    var parameters = {
-        fair: "{{ fair['_id']|string }}",
-    }
-        
-    $.post("{{ url_for('ajax.fair_administrators') }}", parameters, function(data, textStatus) {
-        contents = "<option value=0 disabled selected>Select a Trainer</option>";
-        for (var i = 0; i <data.length; i++) {
-            contents += "<option value='" + data[i]['id'] + "'>" + data[i]['first'] + " " + data[i]['last'] + "</option>";
-        }
-        $('#trainer-select').html(contents);
-    }, "json");
-}
-    
-function pair() {
-    var parameters = {
-        fair: "{{ fair['_id']|string }}",
-        mentor: $('#mentor-select').val(),
-        trainer: $('#trainer-select').val()
-    }
-    
-    $.post("{{ url_for('ajax.pair_trainer') }}", parameters, function(data, textStatus) {
-        location.reload(true);
-    }, "json");
-}
 
-function removePairing(id) {
-    var parameters = {
-        fair: "{{ fair['_id']|string }}",
-        id: id
-    }
-    
-    $.post("{{ url_for('ajax.remove_training') }}", parameters, function(data, textStatus) {
-        location.reload(true);
-    }, "json");
-}
-    
 </script>
 {% endblock %}

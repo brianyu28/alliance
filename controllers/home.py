@@ -31,7 +31,7 @@ def register():
         return render_template('register.html')
     if request.method == 'POST':
         # submitted register form, so register the user
-        req_fields = ['first', 'last', 'email', 'username', 'password', 'password_confirm', 'acct_type', 'school']
+        req_fields = ['first', 'last', 'email', 'username', 'password', 'password_confirm', 'acct_type', 'school', 'timezone']
         for field in req_fields:
             if request.form[field] == '':
                 return render_template('register.html', error='All fields must be complete in order to register.')
@@ -39,10 +39,12 @@ def register():
             return render_template('register.html', error='Your passwords did not match.')
         if (request.form['acct_type'] == "None"):
             return render_template('register.html', error='You must select an account type.')
+        if (request.form['timezone'] == "None"):
+            return render_template('register.html', error='You must select a time zone.')
         # need to add username checking to see if username already exists
         if (not dbmain.usernameAvailable(request.form['username'])):
             return render_template('register.html', error='Your requested username is already taken.')
-        user_id = dbmain.addUser(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'])
+        user_id = dbmain.addUs<er(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'], request.form['timezone'])
         session['id'] = str(user_id)
         return redirect(url_for('home.homepage'))
 
