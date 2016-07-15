@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, render_template, request, session, redirect, url_for
 from model import helpers, dbmain
+from time import time
 from bson import ObjectId
 
 ajax = Blueprint('ajax', __name__,
@@ -86,4 +87,24 @@ def pair_trainer():
 @ajax.route('/remove_training/', methods=['POST'])
 def remove_training():
     dbmain.deleteTrainingByID(ObjectId(request.form['id']))
+    return jsonify(result="Success")
+
+@ajax.route('/post_announcement/', methods=['POST'])
+def post_announcement():
+    dbmain.addAnnouncement(ObjectId(request.form['fair']), ObjectId(request.form['author']), time(), request.form['title'], request.form['contents'])
+    return jsonify(result="Success")
+
+@ajax.route('/remove_announcement/', methods=['POST'])
+def remove_announcement():
+    dbmain.deleteAnnouncementByID(ObjectId(request.form['id']))
+    return jsonify(result="Success")
+
+@ajax.route('/update_permissions/', methods=['POST'])
+def update_permissions():
+    dbmain.setAccessLevel(ObjectId(request.form['user']), ObjectId(request.form['fair']), request.form['level'])
+    return jsonify(result="Success")
+
+@ajax.route('/make_primary_partner/', methods=['POST'])
+def make_primary_partner():
+    dbmain.changePrimaryPartner(ObjectId(session['id']), ObjectId(request.form['id']))
     return jsonify(result="Success")

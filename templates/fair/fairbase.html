@@ -11,12 +11,12 @@
       <li id="navbar-requests"><a href="{{ url_for('fair.requests') }}">Requests</a></li>
       <li id="navbar-pairings"><a href="{{ url_for('fair.pair') }}">Pairings</a></li>
       <li id="navbar-trainers"><a href="{{ url_for('fair.trainers') }}">Trainers</a></li>
-      <li id="navbar-announcements"><a href="#">Announcements</a></li>
-      <li id="navbar-permissions"><a href="#">Permissions</a></li>
+      <li id="navbar-announcements"><a href="{{ url_for('fair.announcements') }}">Announcements</a></li>
+      <li id="navbar-permissions"><a href="{{ url_for('fair.permissions') }}">Permissions</a></li>
       {% elif user.acct_type == "Mentor" %}
-      <li id="navbar-partner"><a href="#">Student</a></li>
+      <li id="navbar-partner"><a href="{{ url_for('fair.partner') }}">Student</a></li>
       {% elif user.acct_type == "Student" %}
-      <li id="navbar-partner"><a href="#">Mentor</a></li>
+      <li id="navbar-partner"><a href="{{ url_for('fair.partner') }}">Mentor</a></li>
       {% endif %}
     </ul>
 </div>

@@ -1,11 +1,14 @@
 import pymongo
-import datetime
+from datetime import datetime
+from pytz import timezone
 from pymongo import MongoClient
 from bson import ObjectId
 from flask import session
 from helpers import *
 client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
 db = client.alliance
+
+# database queries for handling fair-level action
 
 def addUser(username, hashed_pass, first, last, email, acct_type, school, timezone):
     users = db.users
@@ -45,8 +48,23 @@ def currentPFID():
 def currentFair():
     return db.fairs.find_one({"_id":currentPFID()})
 
+def currentPartner():
+    partner = currentUser()['primary_partner']
+    if db.pairings.find({"student":session['id'], "mentor":partner['_id']}).count() > 0:
+        return partner
+    elif db.pairings.find({"mentor":session['id'], "student":partner['_id']}).count() > 0:
+        return partner
+    else:
+        return None
+
 def isAdmin():
     return (currentUser()['acct_type'] == "Administrator")
+
+def isStudent():
+    return (currentUser()['acct_type'] == "Student")
+
+def isMentor():
+    return (currentUser()['acct_type'] == "Mentor")
 
 def authenticate(username, password):
     user = userByUsername(username)
@@ -139,7 +157,36 @@ def addPermission(user, fair, permission):
     return True
 
 def clearPermissions(user, fair):
-    db.registration.update({"user":user, "fair":fair}, {"permissions" : []})
+    db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions":[]}})
+    
+def permissionsForUser(user, fair):
+    reg = db.registration.find_one({"user":user, "fair":fair})
+    if "permissions" not in reg:
+        return []
+    else:
+        return reg["permissions"]
+    
+def accessLevelForUser(user, fair):
+    permissions = permissionsForUser(user['_id'], fair['_id'])
+    if "is_owner" in permissions:
+        return "Owner"
+    elif "full_access" in permissions:
+        return "Full Access"
+    elif permissions == []:
+        return "No Access"
+    else:
+        return "Partial Access"
+    
+def setAccessLevel(user, fair, level):
+    if level == "Owner":
+        db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : ["is_owner"]}})
+    elif level == "Full Access":
+        db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : ["full_access"]}})
+    elif level == "Partial Access":
+        db.registration.update({"user":user, "fair":fair},
+                               {"$set" : {"permissions" : ["can_approve_users", "can_pair_users"]}})
+    elif level == "No Access":
+        db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : []}})
 
 def fairsForUser(user):
     registration = db.registration
@@ -214,6 +261,20 @@ def pairingsForFair(fair):
         lst.append({"_id":pairing["_id"], "student":db.users.find_one({"_id":pairing["student"]}), "mentor":db.users.find_one({"_id":pairing["mentor"]})})
     return lst
 
+def pairingsForStudent(user):
+    pairings = db.pairings.find({"student":user})
+    lst = []
+    for pairing in pairings:
+        lst.append(db.users.find_one({"_id":pairing["mentor"]}))
+    return lst
+
+def pairingsForMentor(user):
+    pairings = db.pairings.find({"mentor":user})
+    lst = []
+    for pairing in pairings:
+        lst.append(db.users.find_one({"_id":pairing["student"]}))
+    return lst
+
 def assignTrainer(fair, mentor, trainer):
     training = {
         "fair" : fair,
@@ -270,10 +331,18 @@ def addAnnouncement(fair, author, datetime, title, contents):
 def deleteAnnouncementByID(id):
     return db.announcements.delete_one({"_id":id})
 
-def announcements(fair):
+# gets time zone for user
+def tzForUser(id):
+    return db.users.find_one({"_id":id})['timezone']
+
+# gets announcements for fair, user is only for timezone purposes
+def announcements(user, fair):
     announces = db.announcements.find({"fair":fair})
     result = []
     for announce in announces:
         announce["_id"] = str(announce["_id"])
+        announce["datetime"] = datetime.fromtimestamp(announce['datetime'], timezone(tzForUser(user['_id']))).strftime("%m/%d/%Y %I:%M:%S %p")
+        print announce["datetime"]
         result.append(announce)
     return result
+

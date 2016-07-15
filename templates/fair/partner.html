@@ -1,0 +1,66 @@
+{% extends "fair/fairbase.html" %}
+
+{% block contents %}
+
+{% if error is defined and error != None %}
+<div class="alert alert-danger"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> <strong>Error:</strong> {{ error }} </div>
+{% endif %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Partner List</h4>
+        </div>
+        <div class="content table-responsive table-full-width">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Name</th>
+                    <th>School</th>
+                    <th>Email</th>
+                    <th>Primary</th>
+                </thead>
+                <tbody>
+                    {% for partner in partners %}
+                    
+                    <tr>
+                        <td>{{ partner.first }} {{ partner.last }}</td>
+                        <td>{{ partner.school }}</td>
+                        <td><a href="mailto:{{ partner.email }}">{{ partner.email }}</a></td>
+                        <td>{% if partner['_id'] == primary %}Primary{% else %}<button onclick="makePrimary('{{ partner['_id']|string }}'); return false;" class="btn btn-xs btn-default">Make Primary</button>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if partners|length == 0 %}
+                    <tr>
+                        <td colspan="4">You are not currently assigned to any partner.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-partner").addClass('active'); 
+
+});
+
+    
+function makePrimary(id) {
+    var parameters = {
+        id: id
+    }
+    
+    $.post("{{ url_for('ajax.make_primary_partner') }}", parameters, function(data, textStatus) {
+        window.location.href = window.location.href;
+    }, "json");
+}
+
+</script>
+{% endblock %}

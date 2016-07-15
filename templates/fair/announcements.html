@@ -5,26 +5,19 @@
 <div class="row">
     <div class="card">
         <div class="header">
-            <h4 class="title">Pair Mentors with Mentor Trainers</h4>
+            <h4 class="title">Post New Announcement</h4>
         </div>
         <div class="content">
            <div class="row">
-                <div class="col-sm-6">
-                    <select id="mentor-select" class="form-control">
-                        <option value=0 disabled selected>Select a Mentor</option>
-                    </select>
-                    <input type="checkbox" id="mentor-repeats"> Show already paired mentors
-                </div>
-                <div class="col-sm-6">
-                    <select id="trainer-select" class="form-control">
-                        <option value=0 disabled selected>Select a Trainer</option>
-                    </select>
-                </div>
+               <div class="col-sm-12">
+                   <input style="margin-bottom:10px;" class="form-control" type="text" id="announcement-title" placeholder="Announcement Title">
+                   <textarea class="form-control" id="announcement-contents" placeholder="Announcement" rows="5"></textarea>
+               </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                        <br />
-                    <button onclick="pair()" class="btn btn-primary">Pair</button>
+                    <button onclick="postAnnouncement()" class="btn btn-primary">Post Announcement</button>
                 </div>
             </div>
         </div>
@@ -37,22 +30,22 @@
             <h4 class="title">Announcements</h4>
         </div>
         <div class="content">
-            <table id="pairing-table" class="table table-striped table-bordered" style="font-size:14px;" cellspacing="0" width="100%">
+            <table id="announcements-table" class="table table-striped table-bordered" style="font-size:14px;" cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th>Mentor</th>
+                        <th>Announcement</th>
+                        <th>Date</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
-                   
-                    {% for pairing in pairings %}
+                   {% for announcement in announcements %}
                     <tr>
-                    <td>{{ pairing['mentor']['first'] }} {{ pairing['mentor']['last'] }}</td>
-                    <td>{{ pairing['trainer']['first'] }} {{ pairing['trainer']['last'] }}</td>
-                    <td><button onclick="removePairing('{{ pairing['_id']|string }}')" class="btn btn-xs btn-danger">Delete Pairing</button></td>
+                        <td><b>{{ announcement.title }}</b><br />{{ announcement.contents }}</td>
+                        <td>{{ announcement.datetime }}</td>
+                        <td><button onclick="deleteAnnouncement('{{ announcement['_id'] }}')" class="btn btn-danger btn-xs">Delete</button></td>
                     </tr>
-                    {% endfor %}
+                   {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -68,6 +61,29 @@ $(document).ready(function() {
     $("#navbar-announcements").addClass('active');
     $('#announcements-table').DataTable();
 });
+    
+function postAnnouncement() {
+    var parameters = {
+        fair: "{{ fair['_id']|string }}",
+        author: "{{ user['_id']|string }}", 
+        title: $('#announcement-title').val(), 
+        contents: $('#announcement-contents').val()
+    }
+    
+    $.post("{{ url_for('ajax.post_announcement') }}", parameters, function(data, textStatus) {
+        location.reload(true);
+    }, "json");
+}
+    
+function deleteAnnouncement(id) {
+    var parameters = {
+        id: id
+    }
+    
+    $.post("{{ url_for('ajax.remove_announcement') }}", parameters, function(data, textStatus) {
+        location.reload(true);
+    }, "json");
+}
 
 </script>
 {% endblock %}

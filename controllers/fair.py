@@ -103,5 +103,35 @@ def announcements():
         return render_template('errors/no_primary_fair.html', user=dbmain.currentUser())
     if not dbmain.permissionCheck(ObjectId(session['id']), pfid, "can_post_announcements"):
         return render_template('errors/no_permissions.html', user=dbmain.currentUser())
-    announcements = dbmain.announcements(pfid)
+    announcements = dbmain.announcements(dbmain.currentUser(), pfid)
     return render_template('announcements.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), announcements=announcements)
+
+@fair.route('/permissions/')
+def permissions():
+    if not dbmain.isAdmin():
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    pfid = dbmain.currentPFID()
+    if pfid == None:
+        return render_template('errors/no_primary_fair.html', user=dbmain.currentUser())
+    if not dbmain.hasPermission(ObjectId(session['id']), pfid, "is_owner"):
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    administrators = dbmain.administrators(dbmain.currentFair()['_id'])
+    adminlist = []
+    for administrator in administrators:
+        administrator['alevel'] = dbmain.accessLevelForUser(administrator, dbmain.currentFair())
+        adminlist.append(administrator)
+    return render_template('permissions.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), admins=adminlist)
+
+@fair.route('/partner/')
+def partner():
+    if not dbmain.isStudent() or dbmain.isAdmin():
+        return render_template('errors/no_permissions.html', user=dbmain.currentUser())
+    pfid = dbmain.currentPFID()
+    partners = []
+    if dbmain.isStudent():
+        partners = dbmain.pairingsForStudent(dbmain.currentUser()['_id'])
+    else:
+        partners = dbmain.pairingsForMentor(dbmain.currentUser()['_id'])
+    primary = dbmain.primaryPartner(dbmain.currentUser()['_id'])
+    print partners
+    return render_template('partner.html', user=dbmain.currentUser(), partners=partners, primary=primary)

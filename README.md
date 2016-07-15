@@ -9,6 +9,7 @@ Username: allianceweb
 
 * PyMongo
 * Flask-Mail
+* pytz (timezone)
 
 ## Documentation
 
@@ -32,3 +33,10 @@ Account Types: Student, Mentor, Administrator
 `can_approve_users`: allowed to approve users to fair
 `can_pair_users`: allowed to pair users together
 `can_pair_trainers`: can assign mentor trainers
+
+Access Levels:
+
+`Owner`: Owns fair, has full access and control
+`Full Access`: Full access to fair
+`Partial Access`: Has some permissions (pair users, pair trainers, approve users)
+`No Access`: Can't take actions

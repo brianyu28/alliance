@@ -44,7 +44,7 @@ def register():
         # need to add username checking to see if username already exists
         if (not dbmain.usernameAvailable(request.form['username'])):
             return render_template('register.html', error='Your requested username is already taken.')
-        user_id = dbmain.addUs<er(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'], request.form['timezone'])
+        user_id = dbmain.addUser(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'], request.form['timezone'])
         session['id'] = str(user_id)
         return redirect(url_for('home.homepage'))
 
