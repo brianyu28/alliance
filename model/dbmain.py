@@ -50,9 +50,9 @@ def currentFair():
 
 def currentPartner():
     partner = currentUser()['primary_partner']
-    if db.pairings.find({"student":session['id'], "mentor":partner['_id']}).count() > 0:
+    if db.pairings.find({"student":ObjectId(session['id']), "mentor":partner}).count() > 0:
         return partner
-    elif db.pairings.find({"mentor":session['id'], "student":partner['_id']}).count() > 0:
+    elif db.pairings.find({"mentor":ObjectId(session['id']), "student":partner}).count() > 0:
         return partner
     else:
         return None

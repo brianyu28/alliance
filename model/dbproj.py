@@ -49,3 +49,6 @@ def editProject(project_id, field, value):
 def projectField(project_id, field):
     project = db.projects.find_one({"_id" : project_id})
     return project[field]
+
+def projectOwner(project_id):
+    return db.users.find_one({"_id":db.projects.find_one({"_id":project_id})["user"]})

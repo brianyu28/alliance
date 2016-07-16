@@ -25,10 +25,25 @@ def edit():
         project = dbproj.projectForUser(ObjectId(session['id']))
     else:
         project =dbproj.projectForUser(dbmain.currentPartner())
+    # get the author of the project
+    author = dbproj.projectOwner(project['_id'])
     # fields to show. Each is array of form [Human-Readable Name, Database Field, Rows for Editing]
     fields = []
     fields.append(["Title", "title", 1])
     fields.append(["Question", "question", 2])
     fields.append(["Purpose", "purpose", 2])
     fields.append(["Research Rationale", "rationale", 3])
-    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project)
+    fields.append(["Hypothesis", "hypothesis", 3])
+    fields.append(["Null Hypothesis", "nullhypo", 3])
+    fields.append(["Independent Variable", "ivar", 1])
+    fields.append(["Dependent Variable", "dvar", 1])
+    fields.append(["Controlled Variables", "cvars", 3])
+    fields.append(["Control", "control", 2])
+    fields.append(["Background Research", "background", 7])
+    fields.append(["Materials", "materials", 7])
+    fields.append(["Procedure", "procedure", 7])
+    fields.append(["Data", "data", 7])
+    fields.append(["Discussion of Results", "discussion", 7])
+    fields.append(["Conclusion", "materials", 5])
+    fields.append(["Acknowledgements", "acknowledgements", 3])
+    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=author)

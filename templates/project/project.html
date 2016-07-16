@@ -1,7 +1,6 @@
 {% extends "project/projectbase.html" %}
 
 {% block contents %}
-
 {% for field in fields %}
 <div class="row">
     <div class="card">
@@ -10,14 +9,11 @@
                 <span id="head-button-{{ field[1] }}"><button onclick="edit('{{ field[1] }}', {{ field[2] }})" class="btn btn-xs btn-default">Edit</button></span> {{ field[0] }}</h4>
         </div>
         <div class="content">
-           <div class="row">
-              <div id="contents-{{ field[1] }}" class="col-sm-12">{{ project[field[1]] }}</div>
-           </div>
+           <div class="row" style="white-space:pre-line;"><div id="contents-{{ field[1] }}" class="col-sm-12">{{ project[field[1]]|e }}</div></div>
         </div>
     </div>
 </div>
 {% endfor %}
-
 {% endblock %}
 
 
@@ -44,7 +40,7 @@ function save(field, rows) {
     
     $.post("{{ url_for('ajax.update_project') }}", parameters, function(data, textStatus) {
         $('#head-button-' + field).html('<button onclick="edit(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Edit</button>');
-        $('#contents-' + field).html($('#editor-' + field).val());
+        $('#contents-' + field).text($('#editor-' + field).val());
     }, "json");
 }
     
@@ -56,7 +52,7 @@ function cancel(field, rows) {
     
     $.post("{{ url_for('ajax.project_field') }}", parameters, function(data, textStatus) {
         $('#head-button-' + field).html('<button onclick="edit(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Edit</button>');
-        $('#contents-' + field).html(data['result']);
+        $('#contents-' + field).text(data['result']);
     }, "json");
 }
     

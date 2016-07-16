@@ -124,7 +124,7 @@ def permissions():
 
 @fair.route('/partner/')
 def partner():
-    if not dbmain.isStudent() or dbmain.isAdmin():
+    if (not dbmain.isStudent()) and (not dbmain.isMentor()):
         return render_template('errors/no_permissions.html', user=dbmain.currentUser())
     pfid = dbmain.currentPFID()
     partners = []
