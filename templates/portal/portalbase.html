@@ -22,7 +22,7 @@
 
 {% if user.acct_type == "Mentor" or user.acct_type == "Student" %}
 <li id="sidebar-project">
-    <a href="#">
+    <a href="{{ url_for('project.project_page') }}">
         <p><i class="fa fa-flask fa-fw"></i>&nbsp;&nbsp;Project</p>
     </a>
 </li>

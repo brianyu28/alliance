@@ -123,7 +123,9 @@ def addRegistration(user, fair, approved):
     reg = {
         "user" : user,
         "fair" : fair,
-        "approved" : True if approved else False
+        "approved" : True if approved else False,
+        "title" : None,
+        "proj_approved" : False
     }
     reg_id = registration.insert_one(reg).inserted_id
     return reg_id

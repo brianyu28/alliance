@@ -1,0 +1,64 @@
+{% extends "project/projectbase.html" %}
+
+{% block contents %}
+
+{% for field in fields %}
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">
+                <span id="head-button-{{ field[1] }}"><button onclick="edit('{{ field[1] }}', {{ field[2] }})" class="btn btn-xs btn-default">Edit</button></span> {{ field[0] }}</h4>
+        </div>
+        <div class="content">
+           <div class="row">
+              <div id="contents-{{ field[1] }}" class="col-sm-12">{{ project[field[1]] }}</div>
+           </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-edit").addClass('active');
+});
+    
+function edit(field, rows) {
+    editor = '<textarea class="form-control" rows="' + rows + '" id="editor-' + field + '">' + $('#contents-' + field).html() + '</textarea>';
+    $('#contents-' + field).html(editor);
+    $('#editor-' + field).focus();
+    $('#head-button-' + field).html('<button onclick="save(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-primary">Save</button> <button onclick="cancel(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Cancel</button>');
+}
+    
+function save(field, rows) {
+    var parameters = {
+        project_id: "{{ project['_id']|string }}",
+        field: field,
+        value: $('#editor-' + field).val()
+    }
+    
+    $.post("{{ url_for('ajax.update_project') }}", parameters, function(data, textStatus) {
+        $('#head-button-' + field).html('<button onclick="edit(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Edit</button>');
+        $('#contents-' + field).html($('#editor-' + field).val());
+    }, "json");
+}
+    
+function cancel(field, rows) {
+    var parameters = {
+        project_id: "{{ project['_id']|string }}",
+        field: field,
+    }
+    
+    $.post("{{ url_for('ajax.project_field') }}", parameters, function(data, textStatus) {
+        $('#head-button-' + field).html('<button onclick="edit(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Edit</button>');
+        $('#contents-' + field).html(data['result']);
+    }, "json");
+}
+    
+</script>
+{% endblock %}

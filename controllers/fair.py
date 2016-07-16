@@ -133,5 +133,4 @@ def partner():
     else:
         partners = dbmain.pairingsForMentor(dbmain.currentUser()['_id'])
     primary = dbmain.primaryPartner(dbmain.currentUser()['_id'])
-    print partners
     return render_template('partner.html', user=dbmain.currentUser(), partners=partners, primary=primary)

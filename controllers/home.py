@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain
+from model import helpers, dbmain, dbproj
 
 home = Blueprint('home', __name__,
                         template_folder='../templates/home')
@@ -45,6 +45,9 @@ def register():
         if (not dbmain.usernameAvailable(request.form['username'])):
             return render_template('register.html', error='Your requested username is already taken.')
         user_id = dbmain.addUser(request.form['username'], helpers.get_hashed_password(request.form['password']), request.form['first'], request.form['last'], request.form['email'], request.form['acct_type'], request.form['school'], request.form['timezone'])
+        # if the user is a student, create their project
+        if request.form['acct_type'] == "Student":
+            dbproj.createProjectForUser(user_id)
         session['id'] = str(user_id)
         return redirect(url_for('home.homepage'))
 

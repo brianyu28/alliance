@@ -1,0 +1,22 @@
+{% extends "portal/portalbase.html" %}
+
+{% block content %}
+<h2>Project</h2>
+<hr>
+<div class="row">
+    <ul class="nav nav-tabs">
+      <li id="navbar-edit"><a href="#">Edit Project</a></li>
+    </ul>
+</div>
+<br />
+{% block contents %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-project').addClass('active');   
+});
+</script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain
+from model import helpers, dbmain, dbproj
 from time import time
 from bson import ObjectId
 
@@ -108,3 +108,14 @@ def update_permissions():
 def make_primary_partner():
     dbmain.changePrimaryPartner(ObjectId(session['id']), ObjectId(request.form['id']))
     return jsonify(result="Success")
+
+@ajax.route('/update_project/', methods=['POST'])
+def update_project():
+    dbproj.editProject(ObjectId(request.form['project_id']), request.form['field'], request.form['value'])
+    return jsonify(result="Success")
+
+@ajax.route('/project_field/', methods=['POST'])
+def project_field():
+    result = dbproj.projectField(ObjectId(request.form['project_id']), request.form['field'])
+    return jsonify(result=result)
+    

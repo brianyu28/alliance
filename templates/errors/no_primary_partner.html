@@ -1,0 +1,21 @@
+{% extends "portal/portalbase.html" %}
+
+
+{% block content %}
+<h2>Error: No Primary Partner</h2>
+<hr>
+<div class="row">
+   <div class="col">
+       You attempted to access a page that required you to select a primary partner. Please go to the "Fair" page, and choose a primary partner.
+   </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-portal').addClass('active');   
+});
+</script>
+{% endblock %}
