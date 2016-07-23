@@ -52,3 +52,17 @@ def projectField(project_id, field):
 
 def projectOwner(project_id):
     return db.users.find_one({"_id":db.projects.find_one({"_id":project_id})["user"]})
+
+def roster(fair_id):
+    regs = db.registration.find({"fair":fair_id, "approved":True})
+    students = []
+    mentors = []
+    for reg in regs:
+        user = db.users.find_one({"_id":reg["user"]})
+        user["partner_list"] = dbmain.partners(user["_id"], fair_id)
+        if user["acct_type"] == "Student":
+            students.append(user)
+        elif user["acct_type"] == "Mentor":
+            mentors.append(user)
+    return {"students":students, "mentors":mentors}
+        

@@ -1,0 +1,24 @@
+{% extends "portal/portalbase.html" %}
+
+{% block content %}
+<h2>Participants</h2>
+<hr>
+<div class="row">
+    <ul class="nav nav-tabs">
+      <li id="navbar-roster"><a href="{{ url_for('participants.roster') }}">Roster</a></li>
+      <li id="navbar-profile" class="disabled"><a href="#">Profile</a></li>
+      <li id="navbar-project" class="disabled"><a href="#">Projects</a></li>
+    </ul>
+</div>
+<br />
+{% block contents %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-participants').addClass('active');   
+});
+</script>
+{% endblock %}

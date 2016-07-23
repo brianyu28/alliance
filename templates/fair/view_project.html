@@ -1,0 +1,39 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Project for {{ author.first }} {{author.last }}</h4>
+            <h6 class="title"><a href="{{ url_for('participants.profile', username=author.username) }}">View Profile</a></h6>
+        </div>
+        <div class="content"></div>
+    </div>
+</div>
+
+{% for field in fields %}
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">{{ field[0] }}</h4>
+        </div>
+        <div class="content">
+           <div class="row" style="white-space:pre-line;"><div id="contents-{{ field[1] }}" class="col-sm-12">{{ project[field[1]]|e }}</div></div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $('#navbar-project').removeClass('disabled');
+    $("#navbar-project").addClass('active');
+});
+
+</script>
+{% endblock %}

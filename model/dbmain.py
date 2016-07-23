@@ -34,6 +34,11 @@ def user(id):
 def userByUsername(username):
     return db.users.find_one({"username" : username})
 
+# gets the user by username, or None if there is none
+def userIfExists(username):
+    query = db.users.find({"username":username})
+    return query[0] if query.count() == 1 else None
+
 def currentUser():
     return db.users.find_one({"_id" : ObjectId(session["id"])})
 
@@ -134,6 +139,10 @@ def removeRegistration(user, fair):
     result = db.registration.delete_one({"user":user, "fair":fair})
     return (result == 1)
 
+# determines if registration exists
+def userIsRegisteredForFair(user, fair):
+    return db.registration.find({"user":user, "fair":fair}).count() == 1
+
 def approveUser(user, fair):
     result = db.registration.update_one({"user":user, "fair":fair}, {"$set": {"approved":True}})
     return (result == 1)
@@ -168,8 +177,8 @@ def permissionsForUser(user, fair):
     else:
         return reg["permissions"]
     
-def accessLevelForUser(user, fair):
-    permissions = permissionsForUser(user['_id'], fair['_id'])
+def accessLevelForUser(user_id, fair_id):
+    permissions = permissionsForUser(user_id, fair_id)
     if "is_owner" in permissions:
         return "Owner"
     elif "full_access" in permissions:
@@ -263,15 +272,17 @@ def pairingsForFair(fair):
         lst.append({"_id":pairing["_id"], "student":db.users.find_one({"_id":pairing["student"]}), "mentor":db.users.find_one({"_id":pairing["mentor"]})})
     return lst
 
-def pairingsForStudent(user):
-    pairings = db.pairings.find({"student":user})
+# gets mentors of student
+def pairingsForStudent(user_id):
+    pairings = db.pairings.find({"student":user_id})
     lst = []
     for pairing in pairings:
         lst.append(db.users.find_one({"_id":pairing["mentor"]}))
     return lst
 
-def pairingsForMentor(user):
-    pairings = db.pairings.find({"mentor":user})
+# gets students of mentor
+def pairingsForMentor(user_id):
+    pairings = db.pairings.find({"mentor":user_id})
     lst = []
     for pairing in pairings:
         lst.append(db.users.find_one({"_id":pairing["student"]}))
@@ -348,3 +359,19 @@ def announcements(user, fair):
         result.append(announce)
     return result
 
+# gets a comma-separated list of partners
+def partners(user_id, fair_id):
+    partner_names = []
+    user = db.users.find_one({"_id":user_id})
+    if user["acct_type"] == "Student":
+        partnerships = db.pairings.find({"fair":fair_id, "student":user["_id"]})
+        for partnership in partnerships:
+            partner = db.users.find_one({"_id":partnership["mentor"]})
+            partner_names.append(partner["first"] + " " + partner["last"])
+    elif user["acct_type"] == "Mentor":
+        partnerships = db.pairings.find({"fair":fair_id, "mentor":user["_id"]})
+        for partnership in partnerships:
+            partner = db.users.find_one({"_id":partnership["student"]})
+            partner_names.append(partner["first"] + " " + partner["last"])
+    return ", ".join(partner_names) if len(partner_names) > 0 else "None"
+    

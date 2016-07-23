@@ -14,7 +14,7 @@
 
 {% if user.acct_type == "Administrator" %}
 <li id="sidebar-participants">
-   <a href="#">
+   <a href="{{ url_for('participants.participants_page') }}">
         <p><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Participants</p>
     </a>
 </li>
@@ -57,4 +57,5 @@
         <p><i class="fa fa-sign-out fa-fw"></i>&nbsp;&nbsp;Log Out</p>
     </a>
 </li>
+
 {% endblock %}

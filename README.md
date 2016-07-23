@@ -40,3 +40,5 @@ Access Levels:
 `Full Access`: Full access to fair
 `Partial Access`: Has some permissions (pair users, pair trainers, approve users)
 `No Access`: Can't take actions
+
+All administrators also have the ability to manage the users that they are supervisors for.

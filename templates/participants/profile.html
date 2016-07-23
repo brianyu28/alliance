@@ -1,0 +1,97 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">User Profile: {{ subject.first }} {{ subject.last }}</h4>
+        </div>
+        <div class="content">
+            <i class="fa fa-user fa-fw"></i> {{ subject.acct_type }}<br />
+            <i class="fa fa-envelope-o fa-fw"></i> <a href="mailto:{{ subject.email }}">{{ subject.email }}</a><br />
+            <i class="fa fa-graduation-cap fa-fw"></i> {{ subject.school }}
+        </div>
+    </div>
+</div>
+
+{% if subject.acct_type == "Student" %}
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Mentors</h4>
+        </div>
+        <div class="content">
+            <table id="partner-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>School</th>
+                </thead>
+                <tbody>
+                    {% for partner in partners %}
+                    
+                    <tr>
+                        <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.last }}</a></td>
+                        <td>{{ partner.school }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Project</h4>
+            <h6 class="title"><a href="{{ url_for('participants.project', username=subject.username) }}">View Project</a></h6>
+        </div>
+        <div class="content">
+            <b>Title:</b> {{ project.title }}<br />
+            <b>Question:</b> {{ project.question }}<br />
+        </div>
+    </div>
+</div>
+{% elif subject.acct_type == "Mentor" %}
+{% for partner in partners %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Student: {{ partner.first }} {{ partner.last }}</h4>
+            <h6 class="title">
+                <a href="{{ url_for('participants.profile', username=partner.username) }}">View Profile</a> / 
+                <a href="{{ url_for('participants.project', username=partner.username) }}">View Project</a>
+            </h6>
+        </div>
+        <div class="content">
+            <b>Project Title:</b> {{ partner.project_contents.title }}<br />
+            <b>Question: </b> {{ partner.project_contents.question }}<br />
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
+{% endif %}
+
+
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $('#navbar-profile').removeClass('disabled');
+    $("#navbar-profile").addClass('active');
+    
+
+});
+    
+</script>
+{% endblock %}

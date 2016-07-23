@@ -1,0 +1,75 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Students</h4>
+        </div>
+        <div class="content">
+            <table id="student-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>School</th>
+                    <th>Mentor</th>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    
+                    <tr>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        <td>{{ student.school }}</td>
+                        <td>{{ student.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Mentors</h4>
+        </div>
+        <div class="content">
+            <table id="mentor-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>School</th>
+                    <th>Student</th>
+                </thead>
+                <tbody>
+                    {% for mentor in mentors %}
+                    
+                    <tr>
+                        <td><a href="{{ url_for('participants.profile', username=mentor.username) }}">{{ mentor.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=mentor.username) }}">{{ mentor.last }}</a></td>
+                        <td>{{ mentor.school }}</td>
+                        <td>{{ mentor.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-roster").addClass('active');
+    $('#student-table').DataTable();
+    $('#mentor-table').DataTable();
+});
+    
+</script>
+{% endblock %}

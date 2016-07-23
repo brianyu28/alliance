@@ -118,7 +118,7 @@ def permissions():
     administrators = dbmain.administrators(dbmain.currentFair()['_id'])
     adminlist = []
     for administrator in administrators:
-        administrator['alevel'] = dbmain.accessLevelForUser(administrator, dbmain.currentFair())
+        administrator['alevel'] = dbmain.accessLevelForUser(administrator['_id'], dbmain.currentPFID())
         adminlist.append(administrator)
     return render_template('permissions.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), admins=adminlist)
 

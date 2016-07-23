@@ -1,5 +1,5 @@
 from flask import Flask
-from controllers import home, portal, fair, ajax, project
+from controllers import home, portal, fair, ajax, project, participants
 
 app = Flask(__name__)
 app.debug = True
@@ -9,6 +9,7 @@ app.register_blueprint(home.home)
 app.register_blueprint(portal.portal)
 app.register_blueprint(fair.fair, url_prefix='/fair')
 app.register_blueprint(project.project, url_prefix='/project')
+app.register_blueprint(participants.participants, url_prefix='/participants')
 app.register_blueprint(ajax.ajax, url_prefix='/ajax')
 
 
