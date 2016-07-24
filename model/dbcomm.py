@@ -13,12 +13,20 @@ def conversationExists(members):
     members.sort()
     return db.conversations.find({"members":members}).count() > 0
 
+def conversationWithIDExists(convo_id):
+    return db.conversations.find({"_id":convo_id}).count() > 0
+
+def userIsInConversation(user_id, convo_id):
+    conversation = db.conversations.find_one({"_id":convo_id})
+    return user_id in conversation["members"]
+
 def addConversation(members):
     members.sort()
     if conversationExists(members):
         return None
     conversation = {
-        "members": members
+        "members": members,
+        "last_message": None # keeps track of most recent message sent
     }
     return db.conversations.insert_one(conversation).inserted_id
 
@@ -30,24 +38,35 @@ def addMessage(conversation_id, author_id, timestamp, subject, body):
         "subject" : subject,
         "body" : body
     }
-    return db.mesasges.insert_one(message).inserted_id
+    inserted_id = db.messages.insert_one(message).inserted_id
+    db.conversations.update_one({"_id":conversation_id}, {"$set":{"last_message":inserted_id}})
+    return inserted_id
 
 def messagesInConversation(conversation_id):
     messages = db.messages.find({"conversation":conversation_id}).sort("timestamp", -1)
     result = []
     for message in messages:
         message["_id"] = str(message["_id"])
-        message["datetime"] = datetime.fromtimestamp(message['datetime'], timezone(tzForUser(user['_id']))).strftime("%m/%d/%Y %I:%M:%S %p")
-        result.append(announce)
+        message["timestamp"] = datetime.fromtimestamp(message['timestamp'], timezone(dbmain.tzForUser(ObjectId(session['id'])))).strftime("%m/%d/%Y %I:%M:%S %p")
+        author = db.users.find_one({"_id":message["author"]})
+        message["author"] = author["first"] + " " + author["last"]
+        message["conversation"] = str(message["conversation"])
+        result.append(message)
     return result
-
 
 def conversationsForUser(user_id):
     convos = db.conversations.find({"members":user_id})
     result = []
     for convo in convos:
+        convo["_id"] = str(convo["_id"])
         convo["name"] = convoName(user_id, convo)
+        convo["members"] = ""
+        last_message = db.messages.find_one({"_id":convo["last_message"]}) if convo["last_message"] != None else None
+        convo["last_message"] = last_message["body"] if last_message != None else ""
+        convo["last_update"] = last_message["timestamp"] if last_message != None else 0
+        convo["timestamp"] = datetime.fromtimestamp(last_message['timestamp'], timezone(dbmain.tzForUser(ObjectId(session['id'])))).strftime("%m/%d %I:%M %p") if last_message != None else ""
         result.append(convo)
+    result = sorted(result, key=lambda k: k["last_update"], reverse=True)
     return result
 
 # gets a name for the conversation by taking names of participants, excluding current user
@@ -76,3 +95,6 @@ def convoMembers(user_id, conversation, show_positions):
             else:
                 participants.append(user["first"] + " " + user["last"])
     return participants
+
+# gets list of people who the user can converse with
+# def availableConversers(user_id):

@@ -138,3 +138,9 @@ def send_message():
     message = request.form['message']
     dbcomm.addMessage(ObjectId(conversation_id), ObjectId(author_id), timestamp, subject, message)
     return jsonify(result="Success")
+
+@ajax.route('/get_conversations/', methods=['POST'])
+def get_conversations():
+    user_id = ObjectId(session['id'])
+    conversations = dbcomm.conversationsForUser(user_id)
+    return jsonify(conversations=conversations)
