@@ -9,6 +9,10 @@
     td:hover {
         background-color: #ffffe6;
     }
+
+    .current-convo {
+      background-color: #ffff66 !important;
+    }
 </style>
 {% endblock %}
 
@@ -21,11 +25,12 @@
             </thead>
             <tbody style="font-size:14px;">
                 {% for conversation in conversations %}
-                <tr><td onclick=showConversation("{{ conversation['_id'] }}")>{{ conversation.name }}</td></tr>
+                <tr><td id="conversation-{{ conversation['_id'] }}" onclick=showConversation("{{ conversation['_id'] }}")>{{ conversation.name }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
    </div>
+
    <div id="conversation-div" class="col-lg-9 col-md-8 col-sm-8">
      <div class="card">
          <div style="padding-bottom:10px;" class="header">
@@ -33,15 +38,26 @@
              <span id="members-span"></span>
          </div>
      </div>
+
      <div style="padding-bottom:10px;" class="card">
          <div class="header">
              <h4 class="title">Compose Message</h4>
-             <div class="contents">
-              <textarea class="form-control" rows="5"></textarea>
+           </div>
+             <div class="contents" style="padding-left:10px;padding-right:10px;">
+              <input id="compose-subject" class="form-control" placeholder="Subject" /><br />
+              <textarea id="compose-message" class="form-control" rows="5" placeholder="Message"></textarea>
               <br  />
-              <button class="btn btn-sm btn-primary">Send</button>
-             </div>
-         </div>
+              <span id="send-button-span"></span>
+          </div>
+     </div>
+
+     <div style="padding-bottom:10px;" class="card">
+          <div class="contents" style="padding-top:10px;padding-left:10px;padding-right:10px;">
+              <span id="message-span" style="white-space:pre-line;"></span>
+          </div>
+     </div>
+
+
      </div>
    </div>
 </div>
@@ -57,21 +73,49 @@ $(document).ready(function() {
 });
 
 function showConversation(convo_id) {
+   $("td").removeClass("current-convo");
+   $("#conversation-" + convo_id).addClass("current-convo");
     var parameters = {
       conversation_id: convo_id
     }
 
     $.post("{{ url_for('ajax.messages_in_conversation') }}", parameters, function(data, textStatus) {
       members = data["members"];
-      messages = data["result"];
+      messages = data["messages"];
 
      members_html = "";
       for (var i = 0; i < members.length; i++) {
         members_html += members[i] + '<br  />';
       }
       $('#members-span').html(members_html);
+      $('#send-button-span').html('<button onclick=sendMessage("' + convo_id + '") class="btn btn-sm btn-primary">Send</button>');
       $('#conversation-div').show();
+      $('#compose-subject').focus();
+
+      messages_html = "";
+      for (var i = 0; i < messages.length; i++) {
+        // include the message here
+      }
+      if (messages_html == "")
+        messages_html = "No messages to show.";
+
+      $('#message-span').html(messages_html);
+
     }, "json");
 }
+
+function sendMessage(convo_id) {
+  var parameters = {
+    conversation_id: convo_id,
+    subject: $('#compose-subject').val(),
+    message: $('#compose-message').val()
+  }
+
+  $.post("{{ url_for('ajax.send_message') }}", parameters, function(data, textStatus) {
+    console.log(data);
+  }, "json");
+}
+
+
 </script>
 {% endblock %}

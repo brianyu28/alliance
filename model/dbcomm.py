@@ -33,7 +33,14 @@ def addMessage(conversation_id, author_id, timestamp, subject, body):
     return db.mesasges.insert_one(message).inserted_id
 
 def messagesInConversation(conversation_id):
-    return db.messages.find({"conversation":conversation_id}).sort("timestamp")
+    messages = db.messages.find({"conversation":conversation_id}).sort("timestamp", -1)
+    result = []
+    for message in messages:
+        message["_id"] = str(message["_id"])
+        message["datetime"] = datetime.fromtimestamp(message['datetime'], timezone(tzForUser(user['_id']))).strftime("%m/%d/%Y %I:%M:%S %p")
+        result.append(announce)
+    return result
+
 
 def conversationsForUser(user_id):
     convos = db.conversations.find({"members":user_id})
@@ -64,5 +71,8 @@ def convoMembers(user_id, conversation, show_positions):
     for member in members:
         if member != user_id:
             user = db.users.find_one({"_id":member})
-            participants.append(user["first"] + " " + user["last"])
+            if show_positions:
+                participants.append(user["first"] + " " + user["last"] + "  (" + user["acct_type"] + ")")
+            else:
+                participants.append(user["first"] + " " + user["last"])
     return participants

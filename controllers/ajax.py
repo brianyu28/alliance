@@ -125,10 +125,16 @@ def project_field():
 @ajax.route('/messages_in_conversation/', methods=['POST'])
 def messages_in_conversation():
     conversation_id = request.form['conversation_id']
-    messages = dbcomm.messagesInConversation(conversation_id)
-    result = []
-    for message in messages:
-        message['_id'] = str(message['_id'])
-        result.append(message)
-    members = dbcomm.convoMembers(ObjectId(session['id']), dbcomm.conversationByID(ObjectId(conversation_id)))
-    return jsonify(result=result, members=members)
+    messages = dbcomm.messagesInConversation(ObjectId(conversation_id))
+    members = dbcomm.convoMembers(ObjectId(session['id']), dbcomm.conversationByID(ObjectId(conversation_id)), True)
+    return jsonify(messages=messages, members=members)
+
+@ajax.route('/send_message/', methods=['POST'])
+def send_message():
+    conversation_id = request.form['conversation_id']
+    author_id = session['id']
+    timestamp = time()
+    subject = request.form['subject']
+    message = request.form['message']
+    dbcomm.addMessage(ObjectId(conversation_id), ObjectId(author_id), timestamp, subject, message)
+    return jsonify(result="Success")

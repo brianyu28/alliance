@@ -119,7 +119,7 @@ def primaryPartner(user):
         return partner
     else:
         return None
-    
+
 def hasPrimaryPartner(user):
     return (primaryPartner(user) != None)
 
@@ -169,14 +169,14 @@ def addPermission(user, fair, permission):
 
 def clearPermissions(user, fair):
     db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions":[]}})
-    
+
 def permissionsForUser(user, fair):
     reg = db.registration.find_one({"user":user, "fair":fair})
     if "permissions" not in reg:
         return []
     else:
         return reg["permissions"]
-    
+
 def accessLevelForUser(user_id, fair_id):
     permissions = permissionsForUser(user_id, fair_id)
     if "is_owner" in permissions:
@@ -187,7 +187,7 @@ def accessLevelForUser(user_id, fair_id):
         return "No Access"
     else:
         return "Partial Access"
-    
+
 def setAccessLevel(user, fair, level):
     if level == "Owner":
         db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : ["is_owner"]}})
@@ -355,7 +355,6 @@ def announcements(user, fair):
     for announce in announces:
         announce["_id"] = str(announce["_id"])
         announce["datetime"] = datetime.fromtimestamp(announce['datetime'], timezone(tzForUser(user['_id']))).strftime("%m/%d/%Y %I:%M:%S %p")
-        print announce["datetime"]
         result.append(announce)
     return result
 
@@ -374,4 +373,3 @@ def partners(user_id, fair_id):
             partner = db.users.find_one({"_id":partnership["student"]})
             partner_names.append(partner["first"] + " " + partner["last"])
     return ", ".join(partner_names) if len(partner_names) > 0 else "None"
-    
