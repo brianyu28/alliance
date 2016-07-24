@@ -1,0 +1,22 @@
+{% extends "portal/portalbase.html" %}
+
+{% block content %}
+<h2>Messenger</h2>
+<hr>
+<div class="row">
+    <ul class="nav nav-tabs">
+      <li id="navbar-messages"><a href="{{ url_for('messenger.message_page') }}">Messages</a></li>
+    </ul>
+</div>
+<br />
+{% block contents %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-messenger').addClass('active');   
+});
+</script>
+{% endblock %}

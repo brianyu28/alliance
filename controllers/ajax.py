@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain, dbproj
+from model import helpers, dbmain, dbproj, dbcomm
 from time import time
 from bson import ObjectId
 
@@ -10,7 +10,7 @@ ajax = Blueprint('ajax', __name__,
 def fair_details():
     fair = dbmain.fair(request.form['id'])
     return jsonify(name=fair['name'], location=fair['location'], date=fair['date'], id=str(fair['_id']), private=fair['private'])
-    
+
 @ajax.route('/fair_update/', methods=['POST'])
 def fair_update():
     dbmain.updateFair(ObjectId(request.form['id']), request.form['name'], request.form['date'], request.form['location'], request.form['private'])
@@ -55,6 +55,8 @@ def pair():
             dbmain.changePrimaryPartner(ObjectId(request.form['student']), ObjectId(request.form['mentor']))
         if not dbmain.hasPrimaryPartner(ObjectId(request.form['mentor'])):
             dbmain.changePrimaryPartner(ObjectId(request.form['mentor']), ObjectId(request.form['student']))
+        # create a conversation between the two partners if it does not exist yet
+        dbcomm.addConversation([ObjectId(request.form['student']), ObjectId(request.form['mentor'])])
     return jsonify(result="Success")
 
 @ajax.route('/remove_pairing/', methods=['POST'])
@@ -69,7 +71,7 @@ def mentors_needing_trainers():
     for mentor in mentors:
         result.append({"id":str(mentor['_id']), "first":mentor['first'], "last":mentor['last']})
     return jsonify(result)
-    
+
 @ajax.route('/fair_administrators/', methods=['POST'])
 def fair_administrators():
     administrators = dbmain.administrators(ObjectId(request.form['fair']))
@@ -82,6 +84,7 @@ def fair_administrators():
 def pair_trainer():
     if not dbmain.trainingExists(ObjectId(request.form['fair']), ObjectId(request.form['mentor']), ObjectId(request.form['trainer'])):
         dbmain.assignTrainer(ObjectId(request.form['fair']), ObjectId(request.form['mentor']), ObjectId(request.form['trainer']))
+    dbcomm.addConversation([ObjectId(request.form['mentor']), ObjectId(request.form['trainer'])])
     return jsonify(result="Success")
 
 @ajax.route('/remove_training/', methods=['POST'])
@@ -118,4 +121,14 @@ def update_project():
 def project_field():
     result = dbproj.projectField(ObjectId(request.form['project_id']), request.form['field'])
     return jsonify(result=result)
-    
+
+@ajax.route('/messages_in_conversation/', methods=['POST'])
+def messages_in_conversation():
+    conversation_id = request.form['conversation_id']
+    messages = dbcomm.messagesInConversation(conversation_id)
+    result = []
+    for message in messages:
+        message['_id'] = str(message['_id'])
+        result.append(message)
+    members = dbcomm.convoMembers(ObjectId(session['id']), dbcomm.conversationByID(ObjectId(conversation_id)))
+    return jsonify(result=result, members=members)

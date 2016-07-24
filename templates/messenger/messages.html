@@ -1,0 +1,77 @@
+{% extends "messenger/messengerbase.html" %}
+
+{% block head %}
+<style>
+    .current-convo {
+        background-color: #ffff66;
+    }
+
+    td:hover {
+        background-color: #ffffe6;
+    }
+</style>
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+   <div class="col-lg-3 col-md-4 col-sm-4">
+        <table class="table table-hover">
+            <thead>
+                <th>Conversations</th>
+            </thead>
+            <tbody style="font-size:14px;">
+                {% for conversation in conversations %}
+                <tr><td onclick=showConversation("{{ conversation['_id'] }}")>{{ conversation.name }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+   </div>
+   <div id="conversation-div" class="col-lg-9 col-md-8 col-sm-8">
+     <div class="card">
+         <div style="padding-bottom:10px;" class="header">
+             <h4 class="title">Conversation</h4>
+             <span id="members-span"></span>
+         </div>
+     </div>
+     <div style="padding-bottom:10px;" class="card">
+         <div class="header">
+             <h4 class="title">Compose Message</h4>
+             <div class="contents">
+              <textarea class="form-control" rows="5"></textarea>
+              <br  />
+              <button class="btn btn-sm btn-primary">Send</button>
+             </div>
+         </div>
+     </div>
+   </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-messages").addClass('active');
+    $('#conversation-div').hide();
+});
+
+function showConversation(convo_id) {
+    var parameters = {
+      conversation_id: convo_id
+    }
+
+    $.post("{{ url_for('ajax.messages_in_conversation') }}", parameters, function(data, textStatus) {
+      members = data["members"];
+      messages = data["result"];
+
+     members_html = "";
+      for (var i = 0; i < members.length; i++) {
+        members_html += members[i] + '<br  />';
+      }
+      $('#members-span').html(members_html);
+      $('#conversation-div').show();
+    }, "json");
+}
+</script>
+{% endblock %}

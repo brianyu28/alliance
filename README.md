@@ -21,11 +21,17 @@ Username: allianceweb
 
 `registration`: user (id), fair (id), approved, permissions (array)
 
+* rules for approval statuses: 0 = not submitted, -1 = submitted, awaiting approval, -2 = rejected, 1 = approved
+
 `pairings`: fair (id), student (id), mentor (id)
 
 `trainings`: fair (id), mentor (id), trainer (id)
 
 `announcements`: fair (id), author (id), title, contents
+
+`conversations`: members (list of ids)
+
+`messages`: conversation (id), author (id), timestamp, subject, body
 
 ### Types
 
