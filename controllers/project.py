@@ -46,4 +46,8 @@ def edit():
     fields.append(["Discussion of Results", "discussion", 7])
     fields.append(["Conclusion", "materials", 5])
     fields.append(["Acknowledgements", "acknowledgements", 3])
-    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=author)
+    
+    # get project approval information
+    pfid = dbmain.currentPFID()
+    approval_status = dbproj.approvalStatus(author['_id'], pfid) if pfid != None else None
+    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=author, approval_status=approval_status)

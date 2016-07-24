@@ -1,6 +1,41 @@
 {% extends "project/projectbase.html" %}
 
 {% block contents %}
+
+{% if approval_status != None %}
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Project Approval Status</h4>
+        </div>
+        <div class="content"><div class="row"><div class="col-sm-12">
+            <b>Status: </b><span id="approval-status">
+            {% if approval_status == 0 %}
+            Not Submitted
+            {% elif approval_status == 1 %}
+            Approved
+            {% elif approval_status == -1 %}
+            Awaiting Approval
+            {% elif approval_status == -2 %}
+            Approval Rejected
+            {% else %}
+            Unknown
+            {% endif %}
+            </span>
+            
+            <br /><br />
+            <span id="approval-button">
+                {% if approval_status == 0 %}
+                <button onclick=submitForApproval() class="btn btn-sm btn-primary">Submit for Approval</button>
+                {% elif approval_status == -2 %}
+                <button onclick=submitForApproval() class="btn btn-sm btn-primary">Re-Submit for Approval</button>
+                {% endif %}
+            </span>
+        </div></div></div>
+    </div>
+</div>
+{% endif %}
+
 {% for field in fields %}
 <div class="row">
     <div class="card">
@@ -54,6 +89,19 @@ function cancel(field, rows) {
         $('#head-button-' + field).html('<button onclick="edit(\'' + field + '\', ' + rows + ')" class="btn btn-xs btn-default">Edit</button>');
         $('#contents-' + field).text(data['result']);
     }, "json");
+}
+    
+function submitForApproval() {
+    var parameters = {
+        author_id: "{{ author['_id']|string }}",
+        fair_id: "{{ fair['_id']|string }}"
+    }
+    
+    $.post("{{ url_for('ajax.submit_for_approval') }}", parameters, function(data, textStatus) {
+       console.log(data); 
+        $('#approval-status').html('Awaiting Approval');
+        $('#approval-button').html('');
+    });
 }
     
 </script>

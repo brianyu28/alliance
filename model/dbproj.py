@@ -82,3 +82,13 @@ def fullRoster(fair_id, current_user):
             elif user["acct_type"] == "Administrator":
                 admins.append(user)
     return {"students":students, "mentors":mentors, "admins":admins}
+
+# approval status
+# rules for approval statuses: 0 = not submitted, -1 = submitted, awaiting approval, -2 = rejected, 1 = approved
+def approvalStatus(user_id, fair_id):
+    reg = db.registration.find_one({"user":user_id, "fair":fair_id})
+    return reg["proj_approved"]
+
+def changeApprovalStatus(user_id, fair_id, new_status):
+    db.registration.update_one({"user":user_id, "fair":fair_id}, {"$set":{"proj_approved":new_status}})
+    

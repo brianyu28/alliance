@@ -167,3 +167,9 @@ def new_conversation():
         inserted_id = str(dbcomm.addConversation(members))
         return jsonify(result=1, convo_id=inserted_id)
     
+@ajax.route('/submit_for_approval/', methods=['POST'])
+def submit_for_approval():
+    author_id = ObjectId(request.form['author_id'])
+    fair_id = ObjectId(request.form['fair_id'])
+    dbproj.changeApprovalStatus(author_id, fair_id, -1)
+    return jsonify(result="Success")
