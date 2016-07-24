@@ -146,6 +146,12 @@ def get_conversations():
     conversations = dbcomm.conversationsForUser(user_id)
     return jsonify(conversations=conversations)
 
+@ajax.route('/get_watched_conversations/', methods=['POST'])
+def get_watched_conversations():
+    user_id = ObjectId(session['id'])
+    conversations = dbcomm.watchedConversationsForUser(user_id)
+    return jsonify(conversations=conversations)
+
 @ajax.route('/new_conversation/', methods=['POST'])
 def new_conversation():
     members = []

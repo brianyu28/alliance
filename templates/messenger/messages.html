@@ -31,6 +31,9 @@
                 <tr><td>Loading...</td></tr>
             </tbody>
         </table>
+        
+        <br /><br />
+        <span id="watching-convos-span"></span>
    </div>
 
    <div id="conversation-div" class="col-lg-9 col-md-8 col-sm-8">
@@ -114,10 +117,38 @@ $(document).ready(function() {
     $('#add-convo-table').DataTable();
     getConversations('');
     
+    {% if user["acct_type"] == "Administrator" %}
+    getWatchedConversations('');
+    {% endif %}
+    
     {% if selected != None %}
     showConversation("{{ selected }}");
     {% endif %}
 });
+     
+{% if user["acct_type"] == "Administrator" %}
+function getWatchedConversations(convo_id) {
+    $.post("{{ url_for('ajax.get_watched_conversations') }}", {}, function(data, textStatus) {
+        conversations = data["conversations"];
+        convo_table = '<table class="table table-hover">';
+        convo_table += '<thead><th>Watching</th></thead>';
+        convo_table += '<tbody style="font-size:14px;" id="convo-watching-table">';
+        for (var i = 0; i < conversations.length; i++) {
+            convo_table += '<tr><td class="convo-bar" id="conversation-' + conversations[i]["_id"] + '" onclick=showConversation("' + conversations[i]["_id"] + '")>';
+            convo_table += conversations[i]["name"] + "<br />";
+            convo_table += '<small>' + conversations[i]["timestamp"] + '</small>';
+            convo_table += '</td></tr>';
+        }
+        convo_table += '</tbody></table>';
+        if (conversations.length > 0)
+            $('#watching-convos-span').html(convo_table);
+        
+         if (convo_id != '') {
+            $('#conversation-' + convo_id).addClass("current-convo");
+         }
+    });
+}
+{% endif %}
      
 function getConversations(convo_id) {
     $.post("{{ url_for('ajax.get_conversations') }}", {}, function(data, textStatus) {

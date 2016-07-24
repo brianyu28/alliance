@@ -13,6 +13,10 @@ def conversationExists(members):
     members.sort()
     return db.conversations.find({"members":members}).count() > 0
 
+def getConversation(members):
+    members.sort()
+    return db.conversations.find_one({"members":members})
+
 def conversationWithIDExists(convo_id):
     return db.conversations.find({"_id":convo_id}).count() > 0
 
@@ -69,6 +73,36 @@ def conversationsForUser(user_id):
     result = sorted(result, key=lambda k: k["last_update"], reverse=True)
     return result
 
+# gets conversations that the administrator oversees, between mentors and students
+def watchedConversationsForUser(user_id):
+    convos = []
+    # get all of the training pairings with the current user
+    trainings = db.trainings.find({"trainer":user_id})
+    mentors = []
+    for training in trainings:
+        mentors.append(training["mentor"])
+    # mentors now contains the relevant mentors
+    for mentor_id in mentors:
+        # get pairings for mentor in the fiar
+        mentor = db.users.find_one({"_id":mentor_id})
+        pairings = db.pairings.find({"mentor":mentor["_id"], "fair":dbmain.currentPFID()})
+        for pairing in pairings:
+            conversers = [pairing["mentor"], pairing["student"]]
+            if conversationExists(conversers):
+                convos.append(getConversation(conversers))
+    result = []
+    for convo in convos:
+        convo["_id"] = str(convo["_id"])
+        convo["name"] = convoName(user_id, convo)
+        convo["members"] = ""
+        last_message = db.messages.find_one({"_id":convo["last_message"]}) if convo["last_message"] != None else None
+        convo["last_message"] = last_message["body"] if last_message != None else ""
+        convo["last_update"] = last_message["timestamp"] if last_message != None else 0
+        convo["timestamp"] = datetime.fromtimestamp(last_message['timestamp'], timezone(dbmain.tzForUser(ObjectId(session['id'])))).strftime("%m/%d %I:%M %p") if last_message != None else ""
+        result.append(convo)
+    result = sorted(result, key=lambda k: k["last_update"], reverse=True)
+    return result
+
 # gets a name for the conversation by taking names of participants, excluding current user
 def convoName(user_id, conversation):
     members = conversation['members']
@@ -107,10 +141,31 @@ def availableConversers(user_id):
     for fair in fairs:
         roster = dbproj.fullRoster(fair["_id"], user_id)
         if user["acct_type"] == "Administrator":
-            conversers = roster["students"] + roster["mentors"] + roster["admins"]
+            conversers = roster["admins"] + roster["mentors"] + roster["students"]
         elif user["acct_type"] == "Mentor":
             conversers = dbmain.pairingsForMentor(user_id) + roster["admins"]
         elif user["acct_type"] == "Student":
             conversers = dbmain.pairingsForStudent(user_id) + roster["admins"]
     return conversers
             
+def userWatchesConversation(user_id, convo_id):
+    conversation = db.conversations.find_one({"_id":convo_id})
+    if len(conversation["members"]) != 2:
+        return False
+    u1 = db.users.find_one({"_id":conversation["members"][0]})
+    u2 = db.users.find_one({"_id":conversation["members"][1]})
+    student = None
+    mentor = None
+    if u1["acct_type"] == "Student":
+        student = u1
+        mentor = u2
+    else:
+        student = u2
+        mentor = u1
+    # make sure that student and mentor are paired
+    if db.pairings.find({"student":student["_id"], "mentor":mentor["_id"], "fair":dbmain.currentPFID()}).count() == 0:
+        return False
+    # make sure that this person is a trainer for the mentor
+    if db.trainings.find({"mentor":mentor["_id"], "trainer":user_id, "fair":dbmain.currentPFID()}).count() == 0:
+        return False
+    return True

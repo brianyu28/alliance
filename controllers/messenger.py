@@ -21,7 +21,7 @@ def message_page(convo_id):
     if convo_id != None:
         if not dbcomm.conversationWithIDExists(ObjectId(convo_id)):
             convo_id = None
-        elif not dbcomm.userIsInConversation(ObjectId(session['id']), ObjectId(convo_id)):
+        elif not dbcomm.userIsInConversation(ObjectId(session['id']), ObjectId(convo_id)) and not dbcomm.userWatchesConversation(ObjectId(session['id']), ObjectId(convo_id)):
             convo_id = None
     conversers = dbcomm.availableConversers(ObjectId(session['id']))
     return render_template('messenger/messages.html', conversers=conversers, user=user, selected=convo_id)
