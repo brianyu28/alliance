@@ -3,6 +3,7 @@ from model import helpers, dbmain, dbproj
 from bson import ObjectId
 import re
 
+# "Participants" is the name for the "Rosters" tab, was renamed on the interface earlier
 participants = Blueprint('participants', __name__,
                         template_folder='../templates/participants')
 
@@ -17,17 +18,22 @@ def check():
         return render_template('errors/no_primary_fair.html', user=dbmain.currentUser())
 
 @participants.route('/')
-def participants_page():
-    return redirect(url_for('participants.roster'))
-
-@participants.route('/roster/')
 def roster():
     roster = dbproj.roster(dbmain.currentPFID())
     students = roster['students']
     mentors = roster['mentors']
     return render_template('roster.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), students=students, mentors=mentors)
 
-@participants.route('/roster/<string:username>/')
+@participants.route('/approvals/')
+def approvals():
+    roster = dbproj.rosterForApprovals(dbmain.currentPFID())
+    rejected = roster["-2"]
+    pending = roster["-1"]
+    notsubmitted = roster["0"]
+    approved = roster["1"]
+    return render_template('approvals.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), rejected=rejected, pending=pending, notsubmitted=notsubmitted, approved=approved)
+
+@participants.route('/<string:username>/')
 def profile(username):
     # check to make sure username exists
     user = dbmain.userIfExists(username)
@@ -59,7 +65,7 @@ def profile(username):
     # render the profile
     return render_template('profile.html', user=dbmain.currentUser(), subject=user, partners=partners, project=project)
 
-@participants.route('/roster/<string:username>/project/')
+@participants.route('/<string:username>/project/')
 def project(username):
     # check to make sure username exists
     user = dbmain.userIfExists(username)
@@ -98,4 +104,7 @@ def project(username):
     fields.append(["Discussion of Results", "discussion", 7])
     fields.append(["Conclusion", "materials", 5])
     fields.append(["Acknowledgements", "acknowledgements", 3])
-    return render_template('view_project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=user)
+    
+    # get project approval information
+    approval_status = dbproj.approvalStatus(user['_id'], pfid)
+    return render_template('view_project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=user, approval_status=int(approval_status))

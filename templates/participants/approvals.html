@@ -1,0 +1,148 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Projects Pending Approval ({{ pending|length }})</h4>
+        </div>
+        <div class="content">
+            <table id="pending-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Action</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Project</th>
+                    <th>Mentor</th>
+                </thead>
+                <tbody>
+                    {% for student in pending %}
+                    <tr>
+                        <td id="student-{{ student['_id']|string }}">
+                            <button onclick=approve("{{ student['_id']|string }}") class="btn btn-xs btn-primary">Approve</button> 
+                            <button onclick=reject("{{ student['_id']|string }}") class="btn btn-xs btn-danger">Reject</button>
+                        </td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        <td><a href="{{ url_for('participants.project', username=student.username) }}">{{ student.title }}</a></td>
+                        <td>{{ student.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Unsubmitted Projects ({{ rejected|length + notsubmitted|length }})</h4>
+        </div>
+        <div class="content">
+            <table id="unsubmitted-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Status</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Project</th>
+                    <th>Mentor</th>
+                </thead>
+                <tbody>
+                    {% for student in rejected %}
+                    <tr>
+                        <td id="student-{{ student['_id']|string }}">Rejected</td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        <td><a href="{{ url_for('participants.project', username=student.username) }}">{{ student.title }}</a></td>
+                        <td>{{ student.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for student in notsubmitted %}
+                    <tr>
+                        <td id="student-{{ student['_id']|string }}">Never Submitted</td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        <td><a href="{{ url_for('participants.project', username=student.username) }}">{{ student.title }}</a></td>
+                        <td>{{ student.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Approved Projects ({{ approved|length }})</h4>
+        </div>
+        <div class="content">
+            <table id="approved-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Action</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Project</th>
+                    <th>Mentor</th>
+                </thead>
+                <tbody>
+                    {% for student in approved %}
+                    <tr>
+                        <td id="student-{{ student['_id']|string }}">
+                            <button onclick=reject("{{ student['_id']|string }}") class="btn btn-xs btn-danger">Reject</button>
+                        </td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        <td><a href="{{ url_for('participants.project', username=student.username) }}">{{ student.title }}</a></td>
+                        <td>{{ student.partner_list }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-approvals").addClass('active');
+    $('#pending-table').DataTable();
+    $('#approved-table').DataTable();
+    $('#unsubmitted-table').DataTable();
+});
+    
+function approve(student_id) {
+    var parameters = {
+        author_id: student_id,
+        fair_id: "{{ fair['_id']|string }}",
+        new_status: 1
+    }
+    
+    $.post("{{ url_for('ajax.change_approval_status') }}", parameters, function(data, textStatus) {
+        $('#student-' + student_id).html('Approved');
+    });
+}
+    
+function reject(student_id) {
+    var parameters = {
+        author_id: student_id,
+        fair_id: "{{ fair['_id']|string }}",
+        new_status: -2
+    }
+    
+    $.post("{{ url_for('ajax.change_approval_status') }}", parameters, function(data, textStatus) {
+        $('#student-' + student_id).html('Rejected');
+    });
+}
+
+    
+</script>
+{% endblock %}

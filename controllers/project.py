@@ -50,4 +50,4 @@ def edit():
     # get project approval information
     pfid = dbmain.currentPFID()
     approval_status = dbproj.approvalStatus(author['_id'], pfid) if pfid != None else None
-    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=author, approval_status=approval_status)
+    return render_template('project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=author, approval_status=int(approval_status))

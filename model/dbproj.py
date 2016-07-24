@@ -66,6 +66,21 @@ def roster(fair_id):
             mentors.append(user)
     return {"students":students, "mentors":mentors}
 
+# gets the roster, but includes approval information
+def rosterForApprovals(fair_id):
+    regs = db.registration.find({"fair":fair_id, "approved":True})
+    students = {"-2":[], "-1":[], "0":[], "1":[]}
+    for reg in regs:
+        user = db.users.find_one({"_id":reg["user"]})
+        if user["acct_type"] == "Student":
+            user["title"] = projectForUser(user["_id"])["title"]
+            if user["title"] == "":
+                user["title"] = "Untitled"
+            user["proj_approved"] = reg["proj_approved"]
+            user["partner_list"] = dbmain.partners(user["_id"], fair_id)
+            students[str(int(reg["proj_approved"]))].append(user)
+    return students
+        
 # roster, but includes administrators too
 def fullRoster(fair_id, current_user):
     regs = db.registration.find({"fair":fair_id, "approved":True})
@@ -91,4 +106,3 @@ def approvalStatus(user_id, fair_id):
 
 def changeApprovalStatus(user_id, fair_id, new_status):
     db.registration.update_one({"user":user_id, "fair":fair_id}, {"$set":{"proj_approved":new_status}})
-    

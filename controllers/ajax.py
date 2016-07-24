@@ -173,3 +173,11 @@ def submit_for_approval():
     fair_id = ObjectId(request.form['fair_id'])
     dbproj.changeApprovalStatus(author_id, fair_id, -1)
     return jsonify(result="Success")
+
+@ajax.route('/change_approval_status/', methods=['POST'])
+def change_approval_status():
+    author_id = ObjectId(request.form['author_id'])
+    fair_id = ObjectId(request.form['fair_id'])
+    new_status = request.form['new_status']
+    dbproj.changeApprovalStatus(author_id, fair_id, new_status)
+    return jsonify(result="Success")

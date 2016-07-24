@@ -8,7 +8,31 @@
             <h4 class="title">Project for {{ author.first }} {{author.last }}</h4>
             <h6 class="title"><a href="{{ url_for('participants.profile', username=author.username) }}">View Profile</a></h6>
         </div>
-        <div class="content"></div>
+        <div class="content"><div class="row"><div class="col-sm-12">
+            <b>Approval Status: </b><span id="approval-status">
+            {% if approval_status == 0 %}
+            Not Submitted
+            {% elif approval_status == 1 %}
+            Approved
+            {% elif approval_status == -1 %}
+            Awaiting Approval
+            {% elif approval_status == -2 %}
+            Approval Rejected
+            {% else %}
+            Unknown
+            {% endif %}
+            </span>
+            
+            <br /><br />
+            <span id="approval-button">
+                {% if approval_status == 1 %}
+                <button onclick=revokeApproval() class="btn btn-sm btn-danger">Revoke Approval</button>
+                {% elif approval_status == -1 %}
+                <button onclick=approve() class="btn btn-sm btn-primary">Approve Project</button> 
+                <button onclick=revokeApproval() class="btn btn-sm btn-danger">Reject Project</button>
+                {% endif %}
+            </span>
+        </div></div></div>
     </div>
 </div>
 
@@ -35,5 +59,33 @@ $(document).ready(function() {
     $("#navbar-project").addClass('active');
 });
 
+function approve() {
+    var parameters = {
+        author_id: "{{ author['_id']|string }}",
+        fair_id: "{{ fair['_id']|string }}",
+        new_status: 1
+    }
+    
+    $.post("{{ url_for('ajax.change_approval_status') }}", parameters, function(data, textStatus) {
+        $('#approval-status').html('Approved');
+        $('#approval-button').html('<button onclick=revokeApproval() class="btn btn-sm btn-danger">Revoke Approval</button>');
+    });
+}
+    
+function revokeApproval() {
+    var parameters = {
+        author_id: "{{ author['_id']|string }}",
+        fair_id: "{{ fair['_id']|string }}",
+        new_status: -2
+    }
+    
+    $.post("{{ url_for('ajax.change_approval_status') }}", parameters, function(data, textStatus) {
+        $('#approval-status').html('Approval Rejected');
+        $('#approval-button').html('');
+    });
+}
+    
+
+    
 </script>
 {% endblock %}
