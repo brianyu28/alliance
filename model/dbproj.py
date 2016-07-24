@@ -65,4 +65,20 @@ def roster(fair_id):
         elif user["acct_type"] == "Mentor":
             mentors.append(user)
     return {"students":students, "mentors":mentors}
-        
+
+# roster, but includes administrators too
+def fullRoster(fair_id, current_user):
+    regs = db.registration.find({"fair":fair_id, "approved":True})
+    students = []
+    mentors = []
+    admins = []
+    for reg in regs:
+        if current_user != reg["user"]:
+            user = db.users.find_one({"_id":reg["user"]})
+            if user["acct_type"] == "Student":
+                students.append(user)
+            elif user["acct_type"] == "Mentor":
+                mentors.append(user)
+            elif user["acct_type"] == "Administrator":
+                admins.append(user)
+    return {"students":students, "mentors":mentors, "admins":admins}

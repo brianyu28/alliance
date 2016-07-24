@@ -18,10 +18,10 @@ def check():
 @messenger.route('/<convo_id>/')
 def message_page(convo_id):
     user = dbmain.currentUser()
-    conversations = dbcomm.conversationsForUser(user['_id'])
     if convo_id != None:
         if not dbcomm.conversationWithIDExists(ObjectId(convo_id)):
             convo_id = None
         elif not dbcomm.userIsInConversation(ObjectId(session['id']), ObjectId(convo_id)):
             convo_id = None
-    return render_template('messenger/messages.html', user=user, conversations=conversations, selected=convo_id)
+    conversers = dbcomm.availableConversers(ObjectId(session['id']))
+    return render_template('messenger/messages.html', conversers=conversers, user=user, selected=convo_id)

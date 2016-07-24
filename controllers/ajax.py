@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, render_template, request, session, redirec
 from model import helpers, dbmain, dbproj, dbcomm
 from time import time
 from bson import ObjectId
+import json
 
 ajax = Blueprint('ajax', __name__,
                         template_folder='../templates/ajax')
@@ -144,3 +145,19 @@ def get_conversations():
     user_id = ObjectId(session['id'])
     conversations = dbcomm.conversationsForUser(user_id)
     return jsonify(conversations=conversations)
+
+@ajax.route('/new_conversation/', methods=['POST'])
+def new_conversation():
+    members = []
+    requested_members = json.loads(request.form['members'])
+    if len(requested_members) == 0:
+        return jsonify(result=0)
+    for member in requested_members:
+        members.append(ObjectId(member))
+    members.append(ObjectId(session['id']))
+    if dbcomm.conversationExists(members):
+        return jsonify(result=-1)
+    else:
+        inserted_id = str(dbcomm.addConversation(members))
+        return jsonify(result=1, convo_id=inserted_id)
+    

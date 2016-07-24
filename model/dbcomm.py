@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 from flask import session
 from helpers import *
-import dbmain
+import dbmain, dbproj
 client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
 db = client.alliance
 
@@ -97,4 +97,20 @@ def convoMembers(user_id, conversation, show_positions):
     return participants
 
 # gets list of people who the user can converse with
-# def availableConversers(user_id):
+# Students can communicate with: their mentor(s), and administrators
+# Mentors can communicate with: their student(s), and administrators
+# Administrators can communicate with anyone in fair
+def availableConversers(user_id):
+    user = db.users.find_one({"_id":user_id})
+    fairs = dbmain.fairsForUser(user_id)
+    conversers = []
+    for fair in fairs:
+        roster = dbproj.fullRoster(fair["_id"], user_id)
+        if user["acct_type"] == "Administrator":
+            conversers = roster["students"] + roster["mentors"] + roster["admins"]
+        elif user["acct_type"] == "Mentor":
+            conversers = dbmain.pairingsForMentor(user_id) + roster["admins"]
+        elif user["acct_type"] == "Student":
+            conversers = dbmain.pairingsForStudent(user_id) + roster["admins"]
+    return conversers
+            
