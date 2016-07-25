@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain
+from model import helpers, dbmain, dbtasks
 from bson import ObjectId
 import re
 
@@ -39,9 +39,11 @@ def manage():
         fair = dbmain.fair(request.form['fair'])
         approved = False if fair['private'] else True
         dbmain.addRegistration(ObjectId(session['id']), ObjectId(request.form['fair']), approved)
+        dbtasks.generateProgressesForUser(ObjectId(session['id']), ObjectId(request.form['fair']))
         dbmain.changePrimaryFair(ObjectId(session['id']), ObjectId(request.form['fair']))
     if request.method == 'POST' and request.form['type'] == 'Leave':
         dbmain.removeRegistration(ObjectId(session['id']), ObjectId(request.form['fair']))
+        dbtasks.deleteProgressesForUserInFair(ObjectId(session['id']), ObjectId(request.form['fair']))
         if ObjectId(request.form['fair']) == dbmain.currentUser()['primary']:
             dbmain.changePrimaryFair(ObjectId(session['id']), None)
     registration = dbmain.fairsForUser(ObjectId(session['id']))

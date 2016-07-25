@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain, dbproj, dbcomm
+from model import helpers, dbmain, dbproj, dbcomm, dbtasks
 from time import time
 from bson import ObjectId
 import json
@@ -180,4 +180,33 @@ def change_approval_status():
     fair_id = ObjectId(request.form['fair_id'])
     new_status = request.form['new_status']
     dbproj.changeApprovalStatus(author_id, fair_id, new_status)
+    return jsonify(result="Success")
+
+@ajax.route('/add_task/', methods=['POST'])
+def add_task():
+    name = request.form['name']
+    value = request.form['value']
+    fair_id = ObjectId(request.form['fair_id'])
+    task_id = dbtasks.createTask(fair_id, name, value)
+    dbtasks.generateProgressesForTask(task_id)
+    return jsonify(result="Success")
+
+@ajax.route('/get_tasks/', methods=['POST'])
+def get_tasks():
+    fair_id = ObjectId(request.form['fair_id'])
+    tasks = dbtasks.tasksForFair(fair_id)
+    return jsonify(tasks=tasks)
+
+@ajax.route('/edit_task/', methods=['POST'])
+def edit_task():
+    name = request.form['name']
+    value = request.form['value']
+    task_id = ObjectId(request.form['task_id'])
+    dbtasks.editTask(task_id, name, value)
+    return jsonify(result="Success")
+
+@ajax.route('/delete_task/', methods=['POST'])
+def delete_task():
+    task_id = ObjectId(request.form['task_id'])
+    dbtasks.removeTask(task_id)
     return jsonify(result="Success")

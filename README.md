@@ -33,6 +33,10 @@ Username: allianceweb
 
 `messages`: conversation (id), author (id), timestamp, subject, body
 
+`tasks`: fair (id), name, value
+
+`progress` (represents user's progress on tasks): task (id), user (id), points (-1 means exempt, None means not entered)
+
 ### Types
 
 Account Types: Student, Mentor, Administrator

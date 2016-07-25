@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from model import helpers, dbmain, dbproj
+from model import helpers, dbmain, dbproj, dbtasks
 from bson import ObjectId
 import re
 
@@ -108,3 +108,11 @@ def project(username):
     # get project approval information
     approval_status = dbproj.approvalStatus(user['_id'], pfid)
     return render_template('view_project.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), fields=fields, project=project, author=user, approval_status=int(approval_status))
+
+@participants.route('/tasks/')
+def tasks():
+    return render_template('tasks.html', user=dbmain.currentUser(), fair=dbmain.currentFair())
+
+@participants.route('/progress/')
+def progress():
+    return render_template('progress.html', user=dbmain.currentUser(), fair=dbmain.currentFair())

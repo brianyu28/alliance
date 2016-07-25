@@ -136,6 +136,10 @@ def addRegistration(user, fair, approved):
     return reg_id
 
 def removeRegistration(user, fair):
+    db.pairings.delete_many({"student":user})
+    db.pairings.delete_many({"mentor":user})
+    db.trainings.delete_many({"mentor":user})
+    db.trainings.delete_many({"trainer":user})
     result = db.registration.delete_one({"user":user, "fair":fair})
     return (result == 1)
 
