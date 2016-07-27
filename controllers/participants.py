@@ -115,4 +115,36 @@ def tasks():
 
 @participants.route('/progress/')
 def progress():
-    return render_template('progress.html', user=dbmain.currentUser(), fair=dbmain.currentFair())
+    fair = dbmain.currentFair()
+    progresses = dbtasks.progressReport(fair["_id"])
+    return render_template('progress.html', user=dbmain.currentUser(), fair=fair, progresses=progresses)
+
+@participants.route('/progress/<string:username>')
+def user_progress(username):
+    fair = dbmain.currentFair()
+    # check to make sure user is valid
+    user = dbmain.userIfExists(username)
+    user_id = user["_id"]
+    if user == None:
+        return render_template('errors/generic_error.html', user=dbmain.currentUser(), title="User Does Not Exist", contents="The user you requested to access does not exist.")
+    # check to make sure user is in fair
+    if not dbmain.userIsRegisteredForFair(user_id, fair["_id"]):
+        return render_template('errors/generic_error.html', user=dbmain.currentUser(), title="User Not In Fair", contents="The user you requested to access is not part of your current primary fair.")
+    progresses = dbtasks.getProgressesForUser(user_id, fair["_id"])
+    target = dbmain.userById(user_id)
+    return render_template('user_progress.html', user=dbmain.currentUser(), fair=fair, progresses=progresses, target=target)
+
+@participants.route('/tasks/<string:task_id>/')
+def task_view(task_id):
+    task_id = ObjectId(task_id)
+    # check to make sure that task is valid
+    if not dbtasks.taskExists(task_id):
+        return render_template('errors/generic_error.html', user=dbmain.currentUser(), title="Task Does Not Exist", contents="The task you requested to view does not exist.")
+    # check to make sure that the task is in the fair
+    task = dbtasks.taskById(task_id)
+    fair = dbmain.currentFair()
+    if task["fair"] != fair["_id"]:
+        return render_template('errors/generic_error.html', user=dbmain.currentUser(), title="Task Not In Fair", contents="The task you requested to view is not part of your current primary fair.")
+    # get progresses
+    progresses = dbtasks.getProgressesForTask(task_id)
+    return render_template('task_view.html', user=dbmain.currentUser(), fair=fair, task=task, progresses=progresses)

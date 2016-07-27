@@ -1,0 +1,49 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Progress Report</h4>
+        </div>
+        <div class="content">
+            <table id="progress-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Percent</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Points</th>
+                    <th>Maximum</th>
+                    <th>Mentor Trainer</th>
+                </thead>
+                <tbody id="tasks-table-body">
+                    {% for user in progresses %}
+                    <tr>
+                        <td>{{ '%0.2f' | format(user.report.percent|float) }}%</td>
+                        <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ user.first }}</a></td>
+                        <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ user.last }}</a></td>
+                        <td>{{ user.report.points }}</td>
+                        <td>{{ user.report.total }}</td>
+                        <td>{{ user.trainers }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-progress").addClass('active');
+    $('#progress-table').DataTable();
+});
+ 
+</script>
+{% endblock %}

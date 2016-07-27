@@ -114,13 +114,21 @@ function getTasks() {
        tasks = data["tasks"];
         table_contents = "";
         for (var i = 0; i < tasks.length; i++) {
-            table_contents += '<tr><td id="task-name-' + tasks[i]["_id"] + '">' + tasks[i]["name"] + '</td>';
+            table_contents += '<tr><td>';
+            table_contents += '<a id="task-name-' + tasks[i]["_id"] + '" onclick=goToTask("' + tasks[i]["_id"] + '")>';
+            table_contents += tasks[i]["name"];
+            table_contents += '</a>';
+            table_contents += '</td>';
             table_contents += '<td id="task-value-' + tasks[i]["_id"] + '">' + tasks[i]["value"] + '</td>';
             table_contents += '<td><button onclick=showEditTask("' + tasks[i]["_id"] + '") class="btn btn-default btn-sm">Edit</button><td>';
             table_contents += '</tr>';
         }
         $('#tasks-table-body').html(table_contents);
     });
+}
+    
+function goToTask(task_id) {
+    location.href = "{{ url_for('participants.tasks') }}" + task_id;
 }
     
 function showEditTask(task_id) {

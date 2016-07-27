@@ -210,3 +210,12 @@ def delete_task():
     task_id = ObjectId(request.form['task_id'])
     dbtasks.removeTask(task_id)
     return jsonify(result="Success")
+
+@ajax.route('/update_progress/', methods=['POST'])
+def update_progress():
+    user_id = ObjectId(request.form['user_id'])
+    task_id = ObjectId(request.form['task_id'])
+    points = request.form['points']
+    none = request.form['none'] == "true"
+    dbtasks.updateProgress(user_id, task_id, None if none else points)
+    return jsonify(result="Success")

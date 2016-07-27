@@ -1,0 +1,64 @@
+{% extends "participants/participantbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Progress Report: {{ target.first }} {{ target.last }}</h4>
+            <span id="status-span"></span>
+        </div>
+        <div class="content">
+            <table id="mentors-table" class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <th>Task Name</th>
+                    <th>Task Value</th>
+                    <th>Points</th>
+                </thead>
+                <tbody id="tasks-table-body">
+                    {% for progress in progresses %}
+                    <tr>
+                        <td>{{ progress.name }}</td>
+                        <td>{{ progress.value }}</td>
+                        <td><input id="progress-{{ progress["_id"]|string }}" onkeyup=updateProgress("{{ progress['_id']|string }}") class="form-control" type="number"  placeholder="Points" value="{% if progress["progress"]["points"] != None %}{{ progress["progress"]["points"] }}{% endif %}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-tasks").addClass('active');
+    $('#mentors-table').DataTable();
+});
+
+function updateProgress(task_id) {
+    $('#status-span').html('Saving changes...');
+    points = $('#progress-' + task_id).val();
+    if (!$.isNumeric(points) && points != "")
+        return;
+    
+    none = (points == "");
+    
+    var parameters = {
+        user_id: "{{ target['_id']|string }}",
+        task_id: task_id,
+        points: parseInt(points),
+        none: none
+    };
+    
+    $.post("{{ url_for('ajax.update_progress') }}", parameters, function(data, textStatus) {
+        $('#status-span').html('Changes saved');
+    }, "json");
+}  
+    
+</script>
+{% endblock %}

@@ -31,6 +31,12 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school, timezo
 def user(id):
     return db.users.find_one({"_id" : ObjectId(id)})
 
+def userById(id):
+    return db.users.find_one({"_id":id})
+
+def userExists(user_id):
+    return db.users.find({"_id":user_id}).count() > 0
+
 def userByUsername(username):
     return db.users.find_one({"username" : username})
 
@@ -377,3 +383,14 @@ def partners(user_id, fair_id):
             partner = db.users.find_one({"_id":partnership["student"]})
             partner_names.append(partner["first"] + " " + partner["last"])
     return ", ".join(partner_names) if len(partner_names) > 0 else "None"
+
+# gets a comma-separated list of trainers
+def trainers(user_id, fair_id):
+    trainer_names = []
+    user = db.users.find_one({"_id":user_id})
+    if user["acct_type"] == "Mentor":
+        trainings = db.trainings.find({"fair":fair_id, "mentor":user_id})
+        for training in trainings:
+            trainer = db.users.find_one({"_id":training["trainer"]})
+            trainer_names.append(trainer["first"] + " " + trainer["last"])
+    return ", ".join(trainer_names) if len(trainer_names) > 0 else "None"
