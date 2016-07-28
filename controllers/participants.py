@@ -58,10 +58,12 @@ def profile(username):
         pairlist = dbmain.pairingsForMentor(user["_id"])
         for student in pairlist:
             student["project_contents"] = dbproj.projectForUser(student["_id"])
+            student["approval_status"] = db.proj.approvalStatusString(dbproj.approvalStatus(student["_id"], pfid))
             partners.append(student)
     elif utype == "Student":
         partners = dbmain.pairingsForStudent(user["_id"])
         project = dbproj.projectForUser(user["_id"])
+        project["approval_status"] = dbproj.approvalStatusString(dbproj.approvalStatus(user["_id"], pfid))
     # render the profile
     return render_template('profile.html', user=dbmain.currentUser(), subject=user, partners=partners, project=project)
 

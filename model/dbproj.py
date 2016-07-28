@@ -107,3 +107,16 @@ def approvalStatus(user_id, fair_id):
 
 def changeApprovalStatus(user_id, fair_id, new_status):
     db.registration.update_one({"user":user_id, "fair":fair_id}, {"$set":{"proj_approved":new_status}})
+    
+def approvalStatusString(approval_status):
+    approval_status = int(approval_status)
+    if approval_status == 0:
+        return "Not Submitted"
+    elif approval_status == 1:
+        return "Approved"
+    elif approval_status == -1:
+        return "Awaiting Approval"
+    elif approval_status == -2:
+        return "Rejected"
+    else:
+        return "Unknown"
