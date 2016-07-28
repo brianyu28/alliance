@@ -20,9 +20,9 @@
                 <tbody id="tasks-table-body">
                     {% for user in progresses %}
                     <tr>
-                        <td>{{ '%0.2f' | format(user.report.percent|float) }}%</td>
-                        <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ user.first }}</a></td>
-                        <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ user.last }}</a></td>
+                        <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ '%0.2f' | format(user.report.percent|float) }}%</a></td>
+                        <td>{{ user.first }}</td>
+                        <td>{{ user.last }}</td>
                         <td>{{ user.report.points }}</td>
                         <td>{{ user.report.total }}</td>
                         <td>{{ user.trainers }}</td>

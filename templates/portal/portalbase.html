@@ -30,7 +30,7 @@
 
 {% if user.acct_type == "Mentor" %}
 <li id="sidebar-progress">
-    <a href="#">
+    <a href="{{ url_for('progress.mentor_progress') }}">
         <p><i class="fa fa-th-list fa-fw"></i>&nbsp;&nbsp;Progress Report</p>
     </a>
 </li>

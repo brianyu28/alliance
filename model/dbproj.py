@@ -6,7 +6,8 @@ from bson import ObjectId
 from flask import session
 from helpers import *
 import dbmain
-client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
+import secrets
+client = MongoClient(secrets.mongo_uri)
 db = client.alliance
 
 # sets up an empty project for user, if it doesn't already exist

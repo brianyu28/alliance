@@ -9,7 +9,7 @@
             <span id="status-span"></span>
         </div>
         <div class="content">
-            <table id="mentors-table" class="table table-hover table-striped" style="font-size:14px;">
+            <table id="progress-table" class="table table-hover table-striped" style="font-size:14px;">
                 <thead>
                     <th>Task Name</th>
                     <th>Task Value</th>
@@ -37,7 +37,7 @@
 <script>
 $(document).ready(function() {
     $("#navbar-tasks").addClass('active');
-    $('#mentors-table').DataTable();
+    $('#progress-table').DataTable();
 });
 
 function updateProgress(task_id) {

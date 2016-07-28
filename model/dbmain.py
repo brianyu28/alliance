@@ -5,7 +5,8 @@ from pymongo import MongoClient
 from bson import ObjectId
 from flask import session
 from helpers import *
-client = MongoClient('mongodb://allianceweb:crbysj2016!!@ds011765.mlab.com:11765/alliance')
+import secrets
+client = MongoClient(secrets.mongo_uri)
 db = client.alliance
 
 # database queries for handling fair-level action
