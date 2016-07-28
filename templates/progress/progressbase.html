@@ -1,0 +1,22 @@
+{% extends "portal/portalbase.html" %}
+
+{% block content %}
+<h2>Roster</h2>
+<hr>
+<div class="row">
+    <ul class="nav nav-tabs">
+      <li id="navbar-progress"><a href="{{ url_for('progress.mentor_progress') }}">Progress Report</a></li>
+    </ul>
+</div>
+<br />
+{% block contents %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#sidebar-progress').addClass('active');   
+});
+</script>
+{% endblock %}
