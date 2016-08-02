@@ -27,6 +27,7 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>School</th>
+                    <th>Conversations</th>
                 </thead>
                 <tbody>
                     {% for partner in partners %}
@@ -34,6 +35,7 @@
                         <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.first }}</a></td>
                         <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.last }}</a></td>
                         <td>{{ partner.school }}</td>
+                        <td><a href="{{ url_for('participants.view_conversation', conversation_id=partner['conversation']|string ) }}">View</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

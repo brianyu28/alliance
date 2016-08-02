@@ -102,7 +102,11 @@ def profile(username):
             partners.append(student)
         progress = dbtasks.userProgressReport(user['_id'], pfid)
     elif utype == "Student":
-        partners = dbmain.pairingsForStudent(user["_id"])
+        pairlist = dbmain.pairingsForStudent(user["_id"])
+        for mentor in pairlist:
+            mentor["conversation"] = dbcomm.getConversation([user['_id'], mentor['_id']])
+            mentor["conversation"] = mentor["conversation"]["_id"] if mentor["conversation"] != None else None
+            partners.append(mentor)
         project = dbproj.projectForUser(user["_id"])
         project["approval_status"] = dbproj.approvalStatusString(dbproj.approvalStatus(user["_id"], pfid))
     # render the profile
