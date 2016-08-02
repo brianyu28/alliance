@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from controllers import home, portal, fair, ajax, project, participants, messenger, progress
+from controllers import home, portal, fair, ajax, project, participants, messenger, progress, settings
 from model import dbmain
 import secrets
 
@@ -14,6 +14,7 @@ app.register_blueprint(project.project, url_prefix='/project')
 app.register_blueprint(participants.participants, url_prefix='/roster')
 app.register_blueprint(messenger.messenger, url_prefix='/messenger')
 app.register_blueprint(progress.progress, url_prefix='/progress')
+app.register_blueprint(settings.settings, url_prefix='/settings')
 app.register_blueprint(ajax.ajax, url_prefix='/ajax')
 
 @app.errorhandler(404)

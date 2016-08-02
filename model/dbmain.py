@@ -378,10 +378,12 @@ def tzForUser(id):
 
 # gets announcements for fair, user is only for timezone purposes
 def announcements(user, fair):
-    announces = db.announcements.find({"fair":fair})
+    announces = db.announcements.find({"fair":fair}).sort('datetime', -1)
     result = []
     for announce in announces:
         announce["_id"] = str(announce["_id"])
+        announce["author"] = userById(announce["author"])
+        announce["author"] = announce["author"]["first"] + " " + announce["author"]["last"]
         announce["datetime"] = datetime.fromtimestamp(announce['datetime'], timezone(tzForUser(user['_id']))).strftime("%m/%d/%Y %I:%M:%S %p")
         result.append(announce)
     return result

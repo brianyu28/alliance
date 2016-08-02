@@ -4,11 +4,29 @@
 {% block content %}
 <h2>Welcome to Science Alliance</h2>
 <hr>
+
+{% if announcements|length > 0 %}
 <div class="row">
-   <div class="col">
-       Welcome to Science Alliance Network.
-   </div>
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Announcements</h4>
+        </div>
+        <div class="content">
+           <div class="row">
+                <div class="col-sm-12">
+                    <hr>
+                    {% for announcement in announcements %}
+                    <b>{{ announcement.title }}</b> ({{ announcement.author }}) - {{ announcement.datetime }}<br/><br/>
+                    <div style="white-space:pre-line;">{{ announcement.contents }}</div>
+                    <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endif %}
+
 {% endblock %}
 
 

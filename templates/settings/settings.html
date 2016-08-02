@@ -1,0 +1,42 @@
+{% extends "settings/settingsbase.html" %}
+
+{% block contents %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Change Password</h4>
+        </div>
+        <div class="content">
+           <div class="row">
+                <div class="col-sm-12">
+                    <input class="form-control" id="old-pass" type="password" placeholder="Old Password"><br/>
+                    <input class="form-control" id="new-pass" type="password" placeholder="New Password"><br/>
+                    <input class="form-control" id="confirm-new-pass" type="password" placeholder="Confirm New Password"><br/>
+                    <button onclick="changePass()" class="btn btn-sm btn-primary">Change Password</button> <span id="pass-change-area"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+{{ super() }}
+<script>
+$(document).ready(function() {
+    $("#navbar-settings").addClass('active');
+});
+    
+function changePass() {
+    var parameters = {
+        old_pass: $('#old-pass').val(),
+        new_pass: $('#new-pass').val(),
+        confirm_new_pass: $('#confirm-new-pass').val()
+    }
+}
+    
+</script>
+{% endblock %}
