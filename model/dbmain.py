@@ -47,7 +47,10 @@ def userIfExists(username):
     return query[0] if query.count() == 1 else None
 
 def currentUser():
-    return db.users.find_one({"_id" : ObjectId(session["id"])})
+    if "id" not in session:
+        return None
+    query = db.users.find({"_id" : ObjectId(session["id"])})
+    return query[0] if query.count() > 0 else None
 
 # returns current primary fair ID
 def currentPFID():
@@ -206,7 +209,7 @@ def setAccessLevel(user, fair, level):
         db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : ["full_access"]}})
     elif level == "Partial Access":
         db.registration.update({"user":user, "fair":fair},
-                               {"$set" : {"permissions" : ["can_approve_users", "can_pair_users"]}})
+                               {"$set" : {"permissions" : ["can_approve_users", "can_pair_users", "some_access"]}})
     elif level == "No Access":
         db.registration.update({"user":user, "fair":fair}, {"$set" : {"permissions" : []}})
 
@@ -337,7 +340,21 @@ def administrators(fair):
     return sorted(lst, key=lambda k:k['last'])
 
 def trainingExists(fair, mentor, trainer):
-    return (db.pairings.find({"fair":fair, "mentor":mentor, "trainer":trainer}).count() > 0)
+    return (db.trainings.find({"fair":fair, "mentor":mentor, "trainer":trainer}).count() > 0)
+
+def associatedTrainingExists(fair, student, trainer):
+    pairings = db.pairings.find({"fair":fair, "student":student})
+    result = []
+    for pairing in pairings:
+        mentor_id = pairing["mentor"]
+        query = db.trainings.find({"fair":fair, "mentor":mentor_id, "trainer":trainer})
+        if query.count() > 0:
+            return True
+    return False
+
+# determines whether some training relationship exists (either trainer-mentor or trainer-mentor-student)
+def someTrainingExists(fair, user, trainer):
+    return trainingExists(fair, user, trainer) or associatedTrainingExists(fair, user, trainer)
 
 def deleteTrainingByID(id):
     return db.trainings.delete_one({"_id":id})

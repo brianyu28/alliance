@@ -5,14 +5,16 @@
 <div class="row">
     <div class="card">
         <div class="header">
-            <h4 class="title">Tasks<button onclick="showAddTask()" class="btn btn-xs btn-primary" style="float:right;">Add</button></h4>
+            <h4 class="title">Tasks
+            {% if can_edit %}<button onclick="showAddTask()" class="btn btn-xs btn-primary" style="float:right;">Add</button>{% endif %}
+            </h4>
         </div>
         <div class="content">
             <table id="tasks-table" class="table table-hover table-striped" style="font-size:14px;">
                 <thead>
                     <th>Task Name</th>
                     <th>Point Value</th>
-                    <th>Edit</th>
+                    {% if can_edit %}<th>Edit</th>{% endif %}
                 </thead>
                 <tbody id="tasks-table-body">
                 </tbody>
@@ -83,6 +85,7 @@ $(document).ready(function() {
     getTasks();
 });
 
+{% if can_edit %}
 function showAddTask() {
     $('#add-task-modal').modal();
     $('#add-task-name').val('');
@@ -104,6 +107,7 @@ function createTask() {
         $('#add-task-modal').modal('hide');
     });
 }
+{% endif %}
 
 function getTasks() {
     var parameters = {
@@ -120,7 +124,11 @@ function getTasks() {
             table_contents += '</a>';
             table_contents += '</td>';
             table_contents += '<td id="task-value-' + tasks[i]["_id"] + '">' + tasks[i]["value"] + '</td>';
+            
+            {% if can_edit %}
             table_contents += '<td><button onclick=showEditTask("' + tasks[i]["_id"] + '") class="btn btn-default btn-sm">Edit</button><td>';
+            {% endif %}
+             
             table_contents += '</tr>';
         }
         $('#tasks-table-body').html(table_contents);
@@ -130,7 +138,8 @@ function getTasks() {
 function goToTask(task_id) {
     location.href = "{{ url_for('participants.tasks') }}" + task_id;
 }
-    
+
+{% if can_edit %}
 function showEditTask(task_id) {
     $('#edit-task-name').val($('#task-name-' + task_id).html());
     $('#edit-task-value').val($('#task-value-' + task_id).html());
@@ -162,6 +171,7 @@ function deleteTask(task_id) {
          $('#edit-task-modal').modal('hide');
      }, "json");
 }
+{% endif %}
     
 </script>
 {% endblock %}

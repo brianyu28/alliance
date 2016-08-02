@@ -61,6 +61,7 @@ def roster(fair_id):
     for reg in regs:
         user = db.users.find_one({"_id":reg["user"]})
         user["partner_list"] = dbmain.partners(user["_id"], fair_id)
+        user["access_permitted"] = True # might change to False based on permissions later, determines if admin has permissions
         if user["acct_type"] == "Student":
             students.append(user)
         elif user["acct_type"] == "Mentor":

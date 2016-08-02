@@ -30,7 +30,6 @@
                 </thead>
                 <tbody>
                     {% for partner in partners %}
-                    
                     <tr>
                         <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.first }}</a></td>
                         <td><a href="{{ url_for('participants.profile', username=partner.username) }}">{{ partner.last }}</a></td>
@@ -57,6 +56,34 @@
     </div>
 </div>
 {% elif subject.acct_type == "Mentor" %}
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Progress Report</h4>
+            <h6 class="title">
+                <a href="{{ url_for('participants.user_progress', username=subject.username) }}">View Progress Report</a>
+            </h6>
+        </div>
+        <div class="content">
+           <table style="font-size:14px;" class="table table-striped table-hover">
+               <thead>
+                   <th>Percent</th>
+                   <th>Points</th>
+                   <th>Points Possible</th>
+               </thead>
+               <tbody>
+                   <tr>
+                       <td>{{ '%0.2f' | format(progress['percent']|float) }}%</td>
+                       <td>{{ progress['points'] }}</td>
+                       <td>{{ progress['total'] }}</td>
+                   </tr>
+               </tbody>
+           </table>
+        </div>
+    </div>
+</div>
+
 {% for partner in partners %}
 
 <div class="row">
@@ -65,7 +92,8 @@
             <h4 class="title">Student: {{ partner.first }} {{ partner.last }}</h4>
             <h6 class="title">
                 <a href="{{ url_for('participants.profile', username=partner.username) }}">View Profile</a> / 
-                <a href="{{ url_for('participants.project', username=partner.username) }}">View Project</a>
+                <a href="{{ url_for('participants.project', username=partner.username) }}">View Project</a> / 
+                <a href="{{ url_for('participants.view_conversation', conversation_id=partner['conversation']|string ) }}">View Messages</a>
             </h6>
         </div>
         <div class="content">
@@ -79,8 +107,6 @@
 
 {% endfor %}
 {% endif %}
-
-
 
 {% endblock %}
 

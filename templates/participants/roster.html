@@ -19,8 +19,13 @@
                     {% for student in students %}
                     
                     <tr>
-                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
-                        <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        {% if student["access_permitted"] %}
+                            <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.first }}</a></td>
+                            <td><a href="{{ url_for('participants.profile', username=student.username) }}">{{ student.last }}</a></td>
+                        {% else %}
+                            <td>{{ student.first }}</td>
+                            <td>{{ student.last }}</td>
+                        {% endif %}
                         <td>{{ student.school }}</td>
                         <td>{{ student.partner_list }}</td>
                     </tr>
@@ -48,8 +53,13 @@
                     {% for mentor in mentors %}
                     
                     <tr>
+                       {% if mentor["access_permitted"] %}
                         <td><a href="{{ url_for('participants.profile', username=mentor.username) }}">{{ mentor.first }}</a></td>
                         <td><a href="{{ url_for('participants.profile', username=mentor.username) }}">{{ mentor.last }}</a></td>
+                        {% else %}
+                        <td>{{ mentor.first }}</td>
+                        <td>{{ mentor.last }}</td>
+                        {% endif %}
                         <td>{{ mentor.school }}</td>
                         <td>{{ mentor.partner_list }}</td>
                     </tr>

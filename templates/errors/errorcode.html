@@ -1,0 +1,18 @@
+{% if user != None %}
+{% extends "portal/portalbase.html" %}
+{% else %}
+{% extends "home/homebase.html" %}
+{% endif %}
+
+{% block content %}
+<h1 style="text-align:center;">{{ code }}</h1>
+<h2 style="text-align:center;">Error</h2>
+<hr>
+<div class="row">
+   <div class="col" style="text-align:center;font-size:16px;">
+       {{ message }}
+       <br /><br />
+       <a href="{{ url_for('home.homepage') }}" class="btn btn-md btn-primary">Return Home</a>
+   </div>
+</div>
+{% endblock %}

@@ -15,6 +15,7 @@ def check():
 def fair_page():
     return redirect(url_for('fair.manage'))
 
+# Permissions: everyone can access
 @fair.route('/manage/', methods=['GET', 'POST'])
 def manage():
     error = None
@@ -50,6 +51,7 @@ def manage():
     unjoined = dbmain.unjoinedFairs(ObjectId(session['id']))
     return render_template('manage.html', user=dbmain.currentUser(), registration=registration, unjoined=unjoined, error=error)
 
+# Permissions: only those who Can Approve Users can access (Partial Access or greater)
 @fair.route('/requests/')
 def requests():
     if not dbmain.isAdmin():
@@ -72,6 +74,7 @@ def requests():
             admins.append(request)
     return render_template('requests.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), students=students, mentors=mentors, admins=admins)
 
+# Permissions: only those who Can Pair Users can access (Partial Access or greater)
 @fair.route('/pair/')
 def pair():
     if not dbmain.isAdmin():
@@ -84,6 +87,7 @@ def pair():
     pairings = dbmain.pairingsForFair(pfid)
     return render_template('pair.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), pairings=pairings)
 
+# Permissions: only those who can Pair Trainers can access (Full Access or greater)
 @fair.route('/trainers/')
 def trainers():
     if not dbmain.isAdmin():
@@ -96,6 +100,7 @@ def trainers():
     pairings = dbmain.trainersForFair(pfid)
     return render_template('trainers.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), pairings=pairings)
 
+# Permissions: only those who Can Post Announcements can access (Full Access or greater)
 @fair.route('/announcements/')
 def announcements():
     if not dbmain.isAdmin():
@@ -108,6 +113,7 @@ def announcements():
     announcements = dbmain.announcements(dbmain.currentUser(), pfid)
     return render_template('announcements.html', user=dbmain.currentUser(), fair=dbmain.currentFair(), announcements=announcements)
 
+# Permissions: only owners can edit
 @fair.route('/permissions/')
 def permissions():
     if not dbmain.isAdmin():

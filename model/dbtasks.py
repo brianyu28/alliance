@@ -136,5 +136,6 @@ def progressReport(fair_id):
         if user["acct_type"] == "Mentor":
             user["report"] = userProgressReport(user["_id"], fair_id)
             user["trainers"] = dbmain.trainers(user["_id"], fair_id)
+            user["access_permitted"] = True
             result.append(user)
     return result

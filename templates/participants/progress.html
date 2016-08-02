@@ -20,7 +20,13 @@
                 <tbody id="tasks-table-body">
                     {% for user in progresses %}
                     <tr>
+                       
+                       {% if user["access_permitted"] %}
                         <td><a href="{{ url_for('participants.user_progress', username=user['username']) }}">{{ '%0.2f' | format(user.report.percent|float) }}%</a></td>
+                        {% else %}
+                        <td>{{ '%0.2f' | format(user.report.percent|float) }}%</td>
+                        {% endif %}
+                        
                         <td>{{ user.first }}</td>
                         <td>{{ user.last }}</td>
                         <td>{{ user.report.points }}</td>

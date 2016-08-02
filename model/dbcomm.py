@@ -118,6 +118,10 @@ def convoName(user_id, conversation):
 def conversationByID(conversation_id):
     return db.conversations.find_one({"_id":conversation_id})
 
+def conversationIfExists(conversation_id):
+    query = db.conversations.find({"_id":conversation_id})
+    return query[0] if query.count() > 0 else None
+
 # gets a list of the conversation members, excluding the current user
 def convoMembers(user_id, conversation, show_positions):
     members = conversation['members']
@@ -129,6 +133,14 @@ def convoMembers(user_id, conversation, show_positions):
                 participants.append(user["first"] + " " + user["last"] + "  (" + user["acct_type"] + ")")
             else:
                 participants.append(user["first"] + " " + user["last"])
+    return participants
+
+def usersInConversation(conversation):
+    members = conversation['members']
+    participants = []
+    for member in members:
+        user = db.users.find_one({"_id":member})
+        participants.append(user)
     return participants
 
 # gets list of people who the user can converse with
