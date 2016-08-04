@@ -46,6 +46,10 @@ def userIfExists(username):
     query = db.users.find({"username":username})
     return query[0] if query.count() == 1 else None
 
+def changePassword(user_id, password):
+    query = db.users.update_one({"_id":user_id}, {"$set":{"password":get_hashed_password(password)}})
+    return query
+
 def currentUser():
     if "id" not in session:
         return None

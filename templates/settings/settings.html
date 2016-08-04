@@ -36,6 +36,16 @@ function changePass() {
         new_pass: $('#new-pass').val(),
         confirm_new_pass: $('#confirm-new-pass').val()
     }
+    
+    $.post("{{ url_for('ajax.change_password') }}", parameters, function(data, textStatus) {
+        $('#old-pass').val('');
+        $('#new-pass').val('');
+        $('#confirm-new-pass').val('');
+        if (!data["success"])
+            $('#pass-change-area').html(data["reason"]);
+        else
+            $('#pass-change-area').html('Password changed successfully.');
+    });
 }
     
 </script>

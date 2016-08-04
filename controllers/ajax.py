@@ -219,3 +219,17 @@ def update_progress():
     none = request.form['none'] == "true"
     dbtasks.updateProgress(user_id, task_id, None if none else points)
     return jsonify(result="Success")
+
+@ajax.route('/change_password/', methods=['POST'])
+def change_password():
+    user = dbmain.currentUser()
+    old_pass = request.form['old_pass']
+    new_pass = request.form['new_pass']
+    confirm_new_pass = request.form['confirm_new_pass']
+    password = user['password']
+    if not helpers.check_password(old_pass, password):
+        return jsonify(success=False, reason="Password was incorrect.")
+    if new_pass != confirm_new_pass:
+        return jsonify(success=False, reason="Passwords did not match.")
+    dbmain.changePassword(user['_id'], new_pass)
+    return jsonify(success=True)
