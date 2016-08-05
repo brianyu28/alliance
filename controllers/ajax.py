@@ -233,3 +233,10 @@ def change_password():
         return jsonify(success=False, reason="Passwords did not match.")
     dbmain.changePassword(user['_id'], new_pass)
     return jsonify(success=True)
+
+@ajax.route('/change_email/', methods=['POST'])
+def change_email():
+    user = dbmain.currentUser()
+    email = request.form['email']
+    dbmain.changeUserAttribute(user['_id'], "email", email)
+    return jsonify(success=True)

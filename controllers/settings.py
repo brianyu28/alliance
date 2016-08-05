@@ -13,4 +13,5 @@ def check():
 
 @settings.route('/')
 def settings_page():
-    return render_template('settings.html', user=dbmain.currentUser())
+    user = dbmain.currentUser()
+    return render_template('settings.html', user=user)

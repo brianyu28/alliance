@@ -20,6 +20,24 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Change Email</h4>
+        </div>
+        <div class="content">
+           <div class="row">
+                <div class="col-sm-12">
+                    <b>Current Email Address:</b> <span id="current-email">{{ user.email }}</span>
+                    <br/><br/>
+                    <input class="form-control" id="new-email" type="text" placeholder="New Email Address"><br/>
+                    <button onclick="changeEmail()" class="btn btn-sm btn-primary">Change Email</button> <span id="email-change-area"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 
@@ -45,6 +63,18 @@ function changePass() {
             $('#pass-change-area').html(data["reason"]);
         else
             $('#pass-change-area').html('Password changed successfully.');
+    });
+}
+    
+function changeEmail() {
+    var parameters = {
+        email: $('#new-email').val()
+    }
+    
+    $.post("{{ url_for('ajax.change_email') }}", parameters, function(data, textStatus) {
+        $('#current-email').html($('#new-email').val());
+        $('#new-email').val('');
+        $('#email-change-area').html('Email changed successfully.');
     });
 }
     

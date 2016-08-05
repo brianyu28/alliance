@@ -23,7 +23,12 @@ def addUser(username, hashed_pass, first, last, email, acct_type, school, timezo
         "school": school,
         "timezone": timezone,
         "primary": None,
-        "primary_partner": None
+        "primary_partner": None,
+        "contact_emails":[],
+        "contact_phones":[],
+        "settings": {
+            "notifications": True
+        }
     }
     user_id = users.insert_one(user).inserted_id
     return user_id
@@ -48,6 +53,10 @@ def userIfExists(username):
 
 def changePassword(user_id, password):
     query = db.users.update_one({"_id":user_id}, {"$set":{"password":get_hashed_password(password)}})
+    return query
+
+def changeUserAttribute(user_id, attribute, value):
+    query = db.users.update_one({"_id":user_id}, {"$set":{attribute:value}})
     return query
 
 def currentUser():
