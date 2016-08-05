@@ -59,6 +59,14 @@ def changeUserAttribute(user_id, attribute, value):
     query = db.users.update_one({"_id":user_id}, {"$set":{attribute:value}})
     return query
 
+def addContactEmail(user_id, email):
+    query = db.users.update_one({"_id":user_id}, {"$push":{"contact_emails":email}})
+    return query
+
+def deleteContactEmail(user_id, email):
+    query = db.users.update_one({"_id":user_id}, {"$pull":{"contact_emails":email}})
+    return query
+
 def currentUser():
     if "id" not in session:
         return None

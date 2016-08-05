@@ -5,6 +5,36 @@
 <div class="row">
     <div class="card">
         <div class="header">
+            <h4 class="title">Additional Contacts</h4>
+        </div>
+        <div class="content">
+            <h6>Email Addresses <button onclick=showAddEmail() style="margin-left:5px;" class="btn btn-xs btn-primary">Add</button></h6>
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <tr>
+                        <th>Delete</th>
+                        <th>Email Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for email in user.contact_emails %}
+                            <td><button onclick=deleteContactEmail("{{ email }}") class="btn btn-xs btn-danger">Delete</button></td>
+                            <td>{{ email }}</td>
+                        {% endfor %}
+                        {% if user.contact_emails|length == 0 %}
+                        <td colspan=2>No additional email contacts.</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
             <h4 class="title">Change Password</h4>
         </div>
         <div class="content">
@@ -38,6 +68,26 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block outerbody %}
+<div id="add-email-modal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="fair-detail-header">Add Contact Email</h4>
+      </div>
+      <div class="modal-body">
+        <input autocomplete="off" type="email" class="form-control" id="new-contact-email" placeholder="Email"><br />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick=addContactEmail()>Add</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 
@@ -75,7 +125,31 @@ function changeEmail() {
         $('#current-email').html($('#new-email').val());
         $('#new-email').val('');
         $('#email-change-area').html('Email changed successfully.');
-    });
+    }, "json");
+}
+    
+function showAddEmail() {
+    $('#add-email-modal').modal();
+}
+    
+function addContactEmail() {
+    var parameters = {
+        email: $('#new-contact-email').val()
+    }
+    
+    $.post("{{ url_for('ajax.add_contact_email') }}", parameters, function(data, textStatus) {
+        location.reload(true);
+    }, "json");
+}
+    
+function deleteContactEmail(email) {
+    var parameters = {
+        email: email
+    }
+    
+    $.post("{{ url_for('ajax.delete_contact_email') }}", parameters, function(data, textStatus) {
+        location.reload(true);
+    }, "json");
 }
     
 </script>

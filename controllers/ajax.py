@@ -240,3 +240,17 @@ def change_email():
     email = request.form['email']
     dbmain.changeUserAttribute(user['_id'], "email", email)
     return jsonify(success=True)
+
+@ajax.route('/add_contact_email/', methods=['POST'])
+def add_contact_email():
+    user = dbmain.currentUser()
+    email = request.form['email']
+    dbmain.addContactEmail(user['_id'], email)
+    return jsonify(success=True)
+
+@ajax.route('/delete_contact_email/', methods=['POST'])
+def delete_contact_email():
+    user = dbmain.currentUser()
+    email = request.form['email']
+    dbmain.deleteContactEmail(user['_id'], email)
+    return jsonify(success=True)
