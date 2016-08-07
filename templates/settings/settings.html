@@ -5,6 +5,36 @@
 <div class="row">
     <div class="card">
         <div class="header">
+            <h4 class="title">Preferences</h4>
+        </div>
+        <div class="content">
+            <table class="table table-hover table-striped" style="font-size:14px;">
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Toggle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Email Notifications: <b>{% if user['settings']['notifications'] %}ON{% else %}OFF{% endif %}</b></td>
+                        <td>
+                            {% if user['settings']['notifications'] %}
+                            <button onclick=modifyNotify(true) class="btn btn-xs btn-primary">Turn Off</button>
+                            {% else %}
+                            <button onclick=modifyNotify(false) class="btn btn-xs btn-primary">Turn On</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
             <h4 class="title">Additional Contacts</h4>
         </div>
         <div class="content">
@@ -17,35 +47,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for email in user.contact_emails %}
                     <tr>
-                        {% for email in user.contact_emails %}
-                            <td><button onclick=deleteContactEmail("{{ email }}") class="btn btn-xs btn-danger">Delete</button></td>
-                            <td>{{ email }}</td>
-                        {% endfor %}
-                        {% if user.contact_emails|length == 0 %}
-                        <td colspan=2>No additional email contacts.</td>
-                        {% endif %}
+                        <td><button onclick=deleteContactEmail("{{ email }}") class="btn btn-xs btn-danger">Delete</button></td>
+                        <td>{{ email }}</td>
                     </tr>
+                    {% endfor %}
+                    {% if user.contact_emails|length == 0 %}
+                    <tr>
+                        <td colspan=2>No additional email contacts.</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="card">
-        <div class="header">
-            <h4 class="title">Change Password</h4>
-        </div>
-        <div class="content">
-           <div class="row">
-                <div class="col-sm-12">
-                    <input class="form-control" id="old-pass" type="password" placeholder="Old Password"><br/>
-                    <input class="form-control" id="new-pass" type="password" placeholder="New Password"><br/>
-                    <input class="form-control" id="confirm-new-pass" type="password" placeholder="Confirm New Password"><br/>
-                    <button onclick="changePass()" class="btn btn-sm btn-primary">Change Password</button> <span id="pass-change-area"></span>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -62,6 +76,24 @@
                     <br/><br/>
                     <input class="form-control" id="new-email" type="text" placeholder="New Email Address"><br/>
                     <button onclick="changeEmail()" class="btn btn-sm btn-primary">Change Email</button> <span id="email-change-area"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Change Password</h4>
+        </div>
+        <div class="content">
+           <div class="row">
+                <div class="col-sm-12">
+                    <input class="form-control" id="old-pass" type="password" placeholder="Old Password"><br/>
+                    <input class="form-control" id="new-pass" type="password" placeholder="New Password"><br/>
+                    <input class="form-control" id="confirm-new-pass" type="password" placeholder="Confirm New Password"><br/>
+                    <button onclick="changePass()" class="btn btn-sm btn-primary">Change Password</button> <span id="pass-change-area"></span>
                 </div>
             </div>
         </div>
