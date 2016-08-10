@@ -33,3 +33,17 @@ def send(destination, subject, content):
             conn.quit()
     except Exception, exc:
         sys.exit( "mail failed; %s" % str(exc) ) # give a error message
+
+def send_new_message_mail(recipients, sender, message):
+    print "Sender: " + sender['first']
+    for recipient in recipients:
+        print recipient['first']
+        msg = "Dear " + recipient['first'] + ",<br/><br/>"
+        msg += "You have a new message on Science Alliance Network from " + sender['first'] + " " + sender['last'] + ":<br/><br/>"
+        msg += message
+        msg += '<br/><br/><br/>To respond to this message, use <a href="http://sciencealliancenetwork.com/">Science Alliance Network</a>'
+        if recipient['settings']['notifications']:
+            emails = list(recipient['contact_emails'])
+            emails.append(recipient['email'])
+            print emails
+            send(emails, "Science Alliance Network: New Message", msg)

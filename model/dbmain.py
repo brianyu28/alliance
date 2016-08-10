@@ -10,7 +10,6 @@ client = MongoClient(secrets.mongo_uri)
 db = client.alliance
 
 # database queries for handling fair-level action
-
 def addUser(username, hashed_pass, first, last, email, acct_type, school, timezone):
     users = db.users
     user = {

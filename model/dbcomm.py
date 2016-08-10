@@ -143,6 +143,16 @@ def usersInConversation(conversation):
         participants.append(user)
     return participants
 
+# gets users in conversation, not including current user (passed in via user_id)
+def otherUsersInConversation(user_id, conversation):
+    members = conversation['members']
+    participants = []
+    for member in members:
+        if member != user_id:
+            user = db.users.find_one({"_id":member})
+            participants.append(user)
+    return participants
+
 # gets list of people who the user can converse with
 # Students can communicate with: their mentor(s), and administrators
 # Mentors can communicate with: their student(s), and administrators

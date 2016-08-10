@@ -52,7 +52,7 @@
               <input id="compose-subject" class="form-control" placeholder="Subject" /><br />
               <textarea id="compose-message" class="form-control" rows="5" placeholder="Message"></textarea>
               <br  />
-              <span id="send-button-span"></span>
+              <span id="send-button-span"></span> <span id="send-result-span"></span>
           </div>
      </div>
 
@@ -209,9 +209,10 @@ function sendMessage(convo_id) {
     subject: $('#compose-subject').val(),
     message: $('#compose-message').val()
   }
-
+  $('#send-result-span').html('Sending...');
   $.post("{{ url_for('ajax.send_message') }}", parameters, function(data, textStatus) {
         $('#message-span').html(messageHTML("{{ user.first }} {{ user.last }}", $('#compose-subject').val(), "Just Now", $('#compose-message').val()) + $('#message-span').html());
+      $('#send-result-span').html('Message sent successfully.');
       getConversations(convo_id);
   }, "json");
 }
