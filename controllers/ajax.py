@@ -4,6 +4,7 @@ from time import time
 from bson import ObjectId
 import json
 import mailer
+import threading
 
 ajax = Blueprint('ajax', __name__,
                         template_folder='../templates/ajax')
@@ -142,7 +143,9 @@ def send_message():
     # get recipients of message
     members = dbcomm.otherUsersInConversation(ObjectId(author_id), dbcomm.conversationByID(ObjectId(conversation_id)))
     # send message
-    mailer.send_new_message_mail(members, dbmain.currentUser(), message)
+    t = threading.Thread(target=mailer.send_new_message_mail, args=[members, dbmain.currentUser(), message])
+    t.setDaemon(False)
+    t.start()
     return jsonify(result="Success")
 
 @ajax.route('/get_conversations/', methods=['POST'])
